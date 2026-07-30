@@ -1,0 +1,186 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{41CAC7DC-286E-971B-02A2-99140DECA6DD}|SIMS.Tests\\SIMS.Tests.csproj|c:\\users\\trant\\onedrive\\desktop\\webappassigntment\\app\\sims.tests\\sims.tests.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{41CAC7DC-286E-971B-02A2-99140DECA6DD}|SIMS.Tests\\SIMS.Tests.csproj|solutionrelative:sims.tests\\sims.tests.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A08D648-9434-233F-51F7-1BD2185E29A4}|SIMS.Web\\SIMS.Web.csproj|c:\\users\\trant\\onedrive\\desktop\\webappassigntment\\app\\sims.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2A08D648-9434-233F-51F7-1BD2185E29A4}|SIMS.Web\\SIMS.Web.csproj|solutionrelative:sims.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2A08D648-9434-233F-51F7-1BD2185E29A4}|SIMS.Web\\SIMS.Web.csproj|c:\\users\\trant\\onedrive\\desktop\\webappassigntment\\app\\sims.web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{2A08D648-9434-233F-51F7-1BD2185E29A4}|SIMS.Web\\SIMS.Web.csproj|solutionrelative:sims.web\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\AcademicRecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Domain\\Entities\\AcademicRecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Infrastructure\\Repositories\\CsvCourseRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Infrastructure\\Repositories\\CsvCourseRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Application\\CourseService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Application\\CourseService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Application\\AuthService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Application\\AuthService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\Enrollment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Domain\\Entities\\Enrollment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Domain\\Entities\\User.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\Student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SIMS.Domain\\Entities\\Student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AcademicRecord.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\AcademicRecord.cs",
+              "RelativeDocumentMoniker": "SIMS.Domain\\Entities\\AcademicRecord.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\AcademicRecord.cs",
+              "RelativeToolTip": "SIMS.Domain\\Entities\\AcademicRecord.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T08:45:34.098Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SIMS.Tests.csproj",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Tests\\SIMS.Tests.csproj",
+              "RelativeDocumentMoniker": "SIMS.Tests\\SIMS.Tests.csproj",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Tests\\SIMS.Tests.csproj",
+              "RelativeToolTip": "SIMS.Tests\\SIMS.Tests.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-07-29T08:35:08.703Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CsvCourseRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Infrastructure\\Repositories\\CsvCourseRepository.cs",
+              "RelativeDocumentMoniker": "SIMS.Infrastructure\\Repositories\\CsvCourseRepository.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Infrastructure\\Repositories\\CsvCourseRepository.cs",
+              "RelativeToolTip": "SIMS.Infrastructure\\Repositories\\CsvCourseRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T08:32:49.755Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CourseService.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Application\\CourseService.cs",
+              "RelativeDocumentMoniker": "SIMS.Application\\CourseService.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Application\\CourseService.cs",
+              "RelativeToolTip": "SIMS.Application\\CourseService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T08:32:42.735Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "site.css",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Web\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "SIMS.Web\\wwwroot\\css\\site.css",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Web\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "SIMS.Web\\wwwroot\\css\\site.css",
+              "ViewState": "AgIAANgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-07-29T08:23:59.432Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Web\\Program.cs",
+              "RelativeDocumentMoniker": "SIMS.Web\\Program.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Web\\Program.cs",
+              "RelativeToolTip": "SIMS.Web\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T08:12:45.085Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Application\\AuthService.cs",
+              "RelativeDocumentMoniker": "SIMS.Application\\AuthService.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Application\\AuthService.cs",
+              "RelativeToolTip": "SIMS.Application\\AuthService.cs",
+              "ViewState": "AgIAAE8AAAAAAAAAAAAkwD4AAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T07:31:58.817Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Enrollment.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\Enrollment.cs",
+              "RelativeDocumentMoniker": "SIMS.Domain\\Entities\\Enrollment.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\Enrollment.cs",
+              "RelativeToolTip": "SIMS.Domain\\Entities\\Enrollment.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T07:29:00.764Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "SIMS.Domain\\Entities\\User.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\User.cs",
+              "RelativeToolTip": "SIMS.Domain\\Entities\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T07:28:15.91Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Student.cs",
+              "DocumentMoniker": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\Student.cs",
+              "RelativeDocumentMoniker": "SIMS.Domain\\Entities\\Student.cs",
+              "ToolTip": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Domain\\Entities\\Student.cs",
+              "RelativeToolTip": "SIMS.Domain\\Entities\\Student.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-07-29T07:28:08.536Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

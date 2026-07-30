@@ -1,0 +1,918 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
+/* Style overrides for the Anime Theme */
+body.anime-theme {
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #ffeef2;
+  color: #5c3c43;
+  
+  /* Anime Theme Colors */
+  --bg-primary: #fff5f7;
+  --bg-secondary: #ffeef2;
+  --glass-bg: rgba(255, 240, 245, 0.7);
+  --glass-border: rgba(255, 182, 193, 0.45);
+  --text-primary: #5c3c43;
+  --text-secondary: #8c6e75;
+  --accent-blue: #ff6b8b;
+  --accent-purple: #a27bf6;
+  --gradient-accent: linear-gradient(135deg, #ff8da1 0%, #ff527b 100%);
+  --gradient-accent-hover: linear-gradient(135deg, #ff6b8b 0%, #e63960 100%);
+  --success: #3ab795;
+  --danger: #ff5e7e;
+  --warning: #fec89a;
+
+  /* Pastel Anime sky background */
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(255, 224, 230, 0.6) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(230, 215, 255, 0.6) 0%, transparent 45%),
+    linear-gradient(185deg, #fff0f3 0%, #ecdfff 100%);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* Glass card styling overrides in Anime Theme */
+body.anime-theme .glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(255, 182, 193, 0.15);
+  border-radius: 20px;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
+/* Sidebar navigation modifications for Anime Theme */
+body.anime-theme .app-sidebar {
+  background: rgba(255, 245, 247, 0.75);
+  border-right: 1px solid rgba(255, 182, 193, 0.4);
+  box-shadow: 4px 0 32px 0 rgba(255, 182, 193, 0.1);
+}
+
+body.anime-theme .nav-item-link {
+  border-radius: 14px;
+}
+
+body.anime-theme .nav-item-link:hover {
+  background: rgba(255, 107, 139, 0.1);
+  color: #ff527b;
+}
+
+body.anime-theme .nav-item-link.active {
+  background: var(--gradient-accent);
+  color: #ffffff !important;
+}
+
+/* Table styling for Anime Theme */
+body.anime-theme .glass-table th {
+  background: rgba(255, 107, 139, 0.08);
+  color: #ff527b;
+  border-bottom: 2px solid rgba(255, 182, 193, 0.3);
+}
+
+body.anime-theme .glass-table td {
+  border-bottom: 1px solid rgba(255, 182, 193, 0.15);
+}
+
+body.anime-theme .glass-table tbody tr:hover td {
+  background: rgba(255, 240, 245, 0.5);
+}
+
+/* Inputs styling for Anime Theme */
+body.anime-theme .premium-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(255, 182, 193, 0.5);
+  color: #5c3c43;
+}
+
+body.anime-theme .premium-input:focus {
+  border-color: #ff6b8b;
+  box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.15);
+}
+
+/* Badge styling for Anime Theme */
+body.anime-theme .badge-pill {
+  font-weight: 600;
+  border-radius: 12px;
+}
+
+body.anime-theme .badge-info {
+  background: rgba(255, 107, 139, 0.1);
+  color: #ff527b;
+  border: 1px solid rgba(255, 107, 139, 0.2);
+}
+
+/* Theme Selector UI Styling */
+.anime-theme-toggle-container {
+  padding: 1.25rem;
+  margin-top: auto;
+  border-top: 1px solid rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+body.anime-theme .anime-theme-toggle-container,
+body.cyber-theme .anime-theme-toggle-container {
+  border-top: 1px solid var(--glass-border);
+}
+
+.theme-select-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.theme-pill-group {
+  display: flex;
+  background: rgba(15, 23, 42, 0.05);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid rgba(15, 23, 42, 0.02);
+}
+
+body.anime-theme .theme-pill-group {
+  background: rgba(255, 182, 193, 0.25);
+  border-color: rgba(255, 182, 193, 0.15);
+}
+
+body.cyber-theme .theme-pill-group {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.1);
+}
+
+.theme-pill-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 7px 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 9px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.theme-pill-btn:hover {
+  color: var(--text-primary);
+}
+
+.theme-pill-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
+}
+
+body.anime-theme .theme-pill-btn.active {
+  background: #ff8da1;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(255, 107, 139, 0.25);
+}
+
+body.cyber-theme .theme-pill-btn.active {
+  background: #00f0ff;
+  color: #0a0b10;
+  box-shadow: 0 3px 10px rgba(0, 240, 255, 0.35);
+}
+
+/* Sakura Petals Animation */
+.sakura-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+
+body.anime-theme .sakura-container {
+  display: block;
+}
+
+.sakura-petal {
+  position: absolute;
+  background: #ffb6c1;
+  border-radius: 150% 0 150% 150%;
+  opacity: 0.8;
+  transform-origin: left top;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% {
+    top: -10%;
+    transform: translateX(0) rotate(0deg) scale(0.8);
+  }
+  100% {
+    top: 110%;
+    transform: translateX(200px) rotate(450deg) scale(0.8);
+  }
+}
+
+/* ==========================================
+   Cyberpunk Neo-Tokyo Theme Override
+   ========================================== */
+body.cyber-theme {
+  background-color: #0a0b10;
+  color: #e2e8f0;
+  
+  --bg-primary: #0f111a;
+  --bg-secondary: #0a0b10;
+  --glass-bg: rgba(15, 17, 26, 0.75);
+  --glass-border: rgba(0, 240, 255, 0.22);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --accent-blue: #00f0ff;
+  --accent-purple: #ff007f;
+  --gradient-accent: linear-gradient(135deg, #ff007f 0%, #7b2cbf 100%);
+  --gradient-accent-hover: linear-gradient(135deg, #ff2a93 0%, #9d4edd 100%);
+  --success: #39ff14;
+  --danger: #ff003c;
+  --warning: #ffb703;
+
+  /* Cyber dark neon grid background */
+  background-image: 
+    linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 10% 20%, rgba(255, 0, 127, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.06) 0%, transparent 40%),
+    linear-gradient(180deg, #0f111a 0%, #050608 100%);
+  background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* Glass card styling overrides in Cyber Theme */
+body.cyber-theme .glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.06), inset 0 0 12px rgba(0, 240, 255, 0.02);
+  border-radius: 16px;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+/* Sidebar navigation modifications for Cyber Theme */
+body.cyber-theme .app-sidebar {
+  background: rgba(15, 17, 26, 0.85);
+  border-right: 1px solid rgba(0, 240, 255, 0.18);
+  box-shadow: 4px 0 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+body.cyber-theme .nav-item-link {
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+
+body.cyber-theme .nav-item-link:hover {
+  background: rgba(0, 240, 255, 0.04);
+  color: #00f0ff;
+  border-color: rgba(0, 240, 255, 0.15);
+}
+
+body.cyber-theme .nav-item-link.active {
+  background: var(--gradient-accent);
+  color: #ffffff !important;
+  border-color: #ff007f;
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.35);
+}
+
+/* Table styling for Cyber Theme */
+body.cyber-theme .glass-table th {
+  background: rgba(0, 240, 255, 0.04);
+  color: #00f0ff;
+  border-bottom: 2px solid rgba(0, 240, 255, 0.25);
+}
+
+body.cyber-theme .glass-table td {
+  border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+}
+
+body.cyber-theme .glass-table tbody tr:hover td {
+  background: rgba(0, 240, 255, 0.02);
+}
+
+/* Inputs styling for Cyber Theme */
+body.cyber-theme .premium-input {
+  background: rgba(10, 11, 16, 0.85);
+  border: 1.5px solid rgba(0, 240, 255, 0.25);
+  color: #e2e8f0;
+}
+
+body.cyber-theme .premium-input:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.25);
+}
+
+/* Badge styling for Cyber Theme */
+body.cyber-theme .badge-pill {
+  border-radius: 6px;
+}
+
+body.cyber-theme .badge-info {
+  background: rgba(0, 240, 255, 0.08);
+  color: #00f0ff;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.08);
+}
+
+body.cyber-theme .badge-success {
+  background: rgba(57, 255, 20, 0.08);
+  color: #39ff14;
+  border: 1px solid rgba(57, 255, 20, 0.25);
+}
+
+body.cyber-theme .badge-danger {
+  background: rgba(255, 0, 60, 0.1);
+  color: #ff003c;
+  border: 1px solid rgba(255, 0, 60, 0.25);
+}
+
+/* Digital Rain Animation */
+.cyber-rain-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+
+body.cyber-theme .cyber-rain-container {
+  display: block;
+}
+
+.cyber-rain-drop {
+  position: absolute;
+  width: 1.5px;
+  height: 80px;
+  background: linear-gradient(180deg, transparent, #00f0ff);
+  opacity: 0.45;
+  animation: cyber-rain linear infinite;
+  box-shadow: 0 0 6px #00f0ff;
+}
+
+@keyframes cyber-rain {
+  0% {
+    top: -100px;
+  }
+  100% {
+    top: 110vh;
+  }
+}
+
+/* ==========================================
+   Sakura Storm Sunset Theme Override
+   ========================================== */
+body.storm-theme {
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #ffdae3;
+  color: #4a2c3a;
+  
+  --bg-primary: #fff0f3;
+  --bg-secondary: #ffdae3;
+  --glass-bg: rgba(255, 240, 245, 0.7);
+  --glass-border: rgba(255, 107, 139, 0.35);
+  --text-primary: #4a2c3a;
+  --text-secondary: #7d5a6b;
+  --accent-blue: #ff4d6d;
+  --accent-purple: #c77dff;
+  --gradient-accent: linear-gradient(135deg, #ff4d6d 0%, #c77dff 100%);
+  --gradient-accent-hover: linear-gradient(135deg, #ff758f 0%, #d896ff 100%);
+  --success: #3ab795;
+  --danger: #ff4d6d;
+  --warning: #fec89a;
+
+  /* Sunset Warm Sakura cloud background */
+  background-image: 
+    radial-gradient(circle at 80% 20%, rgba(255, 182, 193, 0.5) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(199, 125, 255, 0.4) 0%, transparent 50%),
+    linear-gradient(135deg, #ffe5ec 0%, #ffc6ff 50%, #bdb2ff 100%);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* Glass card styling overrides in Storm Theme */
+body.storm-theme .glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px 0 rgba(255, 77, 109, 0.12), inset 0 0 12px rgba(255, 77, 109, 0.02);
+  border-radius: 20px;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+}
+
+/* Sidebar navigation modifications for Storm Theme */
+body.storm-theme .app-sidebar {
+  background: rgba(255, 240, 245, 0.8);
+  border-right: 1px solid rgba(255, 107, 139, 0.3);
+  box-shadow: 4px 0 32px 0 rgba(255, 107, 139, 0.08);
+}
+
+body.storm-theme .nav-item-link {
+  border-radius: 14px;
+}
+
+body.storm-theme .nav-item-link:hover {
+  background: rgba(255, 77, 109, 0.1);
+  color: #ff4d6d;
+}
+
+body.storm-theme .nav-item-link.active {
+  background: var(--gradient-accent);
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.25);
+}
+
+/* Table styling for Storm Theme */
+body.storm-theme .glass-table th {
+  background: rgba(255, 77, 109, 0.06);
+  color: #ff4d6d;
+  border-bottom: 2px solid rgba(255, 107, 139, 0.35);
+}
+
+body.storm-theme .glass-table td {
+  border-bottom: 1px solid rgba(255, 107, 139, 0.15);
+}
+
+body.storm-theme .glass-table tbody tr:hover td {
+  background: rgba(255, 240, 245, 0.4);
+}
+
+/* Inputs styling for Storm Theme */
+body.storm-theme .premium-input {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(255, 107, 139, 0.4);
+  color: #4a2c3a;
+}
+
+body.storm-theme .premium-input:focus {
+  border-color: #ff4d6d;
+  box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.15);
+}
+
+/* Badge styling for Storm Theme */
+body.storm-theme .badge-pill {
+  border-radius: 12px;
+}
+
+body.storm-theme .badge-info {
+  background: rgba(255, 77, 109, 0.1);
+  color: #ff4d6d;
+  border: 1px solid rgba(255, 77, 109, 0.25);
+}
+
+body.storm-theme .theme-pill-group {
+  background: rgba(255, 182, 193, 0.3);
+  border-color: rgba(255, 182, 193, 0.2);
+}
+
+body.storm-theme .theme-pill-btn.active {
+  background: #ff4d6d;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(255, 77, 109, 0.25);
+}
+
+/* Sakura Tornado / Vortex Animation */
+.storm-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+
+body.storm-theme .storm-container {
+  display: block;
+}
+
+.tornado-petal {
+  position: absolute;
+  background: linear-gradient(135deg, #ffb6c1, #ff758f);
+  border-radius: 150% 0 150% 150%;
+  opacity: 0.85;
+  transform-origin: center;
+  animation: tornado-vortex linear infinite;
+}
+
+@keyframes tornado-vortex {
+  0% {
+    bottom: -60px;
+    left: calc(50% + var(--orbit-x-start));
+    transform: rotate(0deg) scale(0.4) rotateX(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  50% {
+    left: calc(50% + var(--orbit-x-mid));
+    transform: rotate(360deg) scale(0.95) rotateX(180deg);
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    bottom: 110vh;
+    left: calc(50% + var(--orbit-x-end));
+    transform: rotate(720deg) scale(1.3) rotateX(360deg);
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   Wuthering Waves (WuWa) Theme Override
+   ========================================== */
+body.wuwa-theme {
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #0b0c10;
+  color: #f7fafc;
+  
+  --bg-primary: #12131a;
+  --bg-secondary: #0b0c10;
+  --glass-bg: rgba(18, 19, 26, 0.8);
+  --glass-border: rgba(229, 175, 46, 0.22);
+  --text-primary: #f7fafc;
+  --text-secondary: #a0aec0;
+  --accent-blue: #e5af2e;
+  --accent-purple: #319795;
+  --gradient-accent: linear-gradient(135deg, #e5af2e 0%, #ff8c00 100%);
+  --gradient-accent-hover: linear-gradient(135deg, #ffc83b 0%, #ff6b00 100%);
+  --success: #4fd1c5;
+  --danger: #e53e3e;
+  --warning: #e5af2e;
+
+  /* WuWa dark frequency background */
+  background-image: 
+    linear-gradient(rgba(229, 175, 46, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 175, 46, 0.015) 1px, transparent 1px),
+    radial-gradient(circle at 30% 30%, rgba(229, 175, 46, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(49, 151, 149, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #0e1017 0%, #06070a 100%);
+  background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* Glass card styling overrides in WuWa Theme */
+body.wuwa-theme .glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.5), 0 0 15px rgba(229, 175, 46, 0.04);
+  border-radius: 14px;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+/* Sidebar navigation modifications for WuWa Theme */
+body.wuwa-theme .app-sidebar {
+  background: rgba(18, 19, 26, 0.9);
+  border-right: 1px solid rgba(229, 175, 46, 0.18);
+  box-shadow: 4px 0 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+body.wuwa-theme .nav-item-link {
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+}
+
+body.wuwa-theme .nav-item-link:hover {
+  background: rgba(229, 175, 46, 0.05);
+  color: #e5af2e;
+  border-left-color: rgba(229, 175, 46, 0.3);
+}
+
+body.wuwa-theme .nav-item-link.active {
+  background: rgba(229, 175, 46, 0.12);
+  color: #e5af2e !important;
+  border-left-color: #e5af2e;
+  box-shadow: inset 0 0 10px rgba(229, 175, 46, 0.05);
+}
+
+/* Table styling for WuWa Theme */
+body.wuwa-theme .glass-table th {
+  background: rgba(229, 175, 46, 0.05);
+  color: #e5af2e;
+  border-bottom: 2px solid rgba(229, 175, 46, 0.25);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+body.wuwa-theme .glass-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.wuwa-theme .glass-table tbody tr:hover td {
+  background: rgba(229, 175, 46, 0.02);
+}
+
+/* Inputs styling for WuWa Theme */
+body.wuwa-theme .premium-input {
+  background: rgba(11, 12, 16, 0.9);
+  border: 1.5px solid rgba(229, 175, 46, 0.3);
+  color: #f7fafc;
+  border-radius: 8px;
+}
+
+body.wuwa-theme .premium-input:focus {
+  border-color: #e5af2e;
+  box-shadow: 0 0 8px rgba(229, 175, 46, 0.2);
+}
+
+/* Badge styling for WuWa Theme */
+body.wuwa-theme .badge-pill {
+  border-radius: 4px;
+}
+
+body.wuwa-theme .badge-info {
+  background: rgba(229, 175, 46, 0.08);
+  color: #e5af2e;
+  border: 1px solid rgba(229, 175, 46, 0.25);
+}
+
+body.wuwa-theme .badge-success {
+  background: rgba(79, 209, 197, 0.08);
+  color: #4fd1c5;
+  border: 1px solid rgba(79, 209, 197, 0.25);
+}
+
+body.wuwa-theme .badge-danger {
+  background: rgba(229, 62, 62, 0.08);
+  color: #e53e3e;
+  border: 1px solid rgba(229, 62, 62, 0.25);
+}
+
+body.wuwa-theme .theme-pill-group {
+  background: rgba(229, 175, 46, 0.08);
+  border-color: rgba(229, 175, 46, 0.15);
+}
+
+body.wuwa-theme .theme-pill-btn.active {
+  background: #e5af2e;
+  color: #0b0c10;
+  box-shadow: 0 3px 8px rgba(229, 175, 46, 0.3);
+}
+
+/* Wuthering Waves (WuWa) Floating Resonance Particles Animation */
+.wuwa-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+
+body.wuwa-theme .wuwa-container {
+  display: block;
+}
+
+.wuwa-particle {
+  position: absolute;
+  background: radial-gradient(circle, #e5af2e 0%, rgba(229, 175, 46, 0) 70%);
+  border-radius: 50%;
+  animation: wuwa-freq linear infinite;
+}
+
+@keyframes wuwa-freq {
+  0% {
+    transform: translateY(110vh) translateX(0) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(50vh) translateX(var(--wuwa-drift-x)) scale(1.1);
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-10vh) translateX(calc(var(--wuwa-drift-x) * -0.5)) scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   Gargantua Black Hole Theme Override
+   ========================================== */
+body.gargantua-theme {
+  font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #0e0d12;
+  color: #f5f5f7;
+  
+  --bg-primary: #141318;
+  --bg-secondary: #08080a;
+  --glass-bg: rgba(20, 19, 24, 0.8);
+  --glass-border: rgba(255, 157, 0, 0.22);
+  --text-primary: #f5f5f7;
+  --text-secondary: #9a98a6;
+  --accent-blue: #ff9d00;
+  --accent-purple: #9d4edd;
+  --gradient-accent: linear-gradient(135deg, #ff9d00 0%, #ff5e00 50%, #9d4edd 100%);
+  --gradient-accent-hover: linear-gradient(135deg, #ffb703 0%, #ff781f 50%, #b5179e 100%);
+  --success: #4ea8de;
+  --danger: #ff4d6d;
+  --warning: #ff9d00;
+
+  /* Black hole void with purple nebula background */
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(157, 78, 221, 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 85% 20%, rgba(255, 157, 0, 0.04) 0%, transparent 40%),
+    linear-gradient(180deg, #0e0d12 0%, #050507 100%);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+}
+
+/* Glass card styling overrides in Gargantua Theme */
+body.gargantua-theme .glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 15px rgba(255, 157, 0, 0.02);
+  border-radius: 16px;
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
+/* Sidebar navigation modifications for Gargantua Theme */
+body.gargantua-theme .app-sidebar {
+  background: rgba(14, 13, 18, 0.9);
+  border-right: 1px solid rgba(255, 157, 0, 0.18);
+  box-shadow: 4px 0 32px 0 rgba(0, 0, 0, 0.6);
+}
+
+body.gargantua-theme .nav-item-link {
+  border-radius: 10px;
+}
+
+body.gargantua-theme .nav-item-link:hover {
+  background: rgba(255, 157, 0, 0.05);
+  color: #ff9d00;
+}
+
+body.gargantua-theme .nav-item-link.active {
+  background: var(--gradient-accent);
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(255, 157, 0, 0.25);
+}
+
+/* Table styling for Gargantua Theme */
+body.gargantua-theme .glass-table th {
+  background: rgba(255, 157, 0, 0.04);
+  color: #ff9d00;
+  border-bottom: 2px solid rgba(255, 157, 0, 0.25);
+}
+
+body.gargantua-theme .glass-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.gargantua-theme .glass-table tbody tr:hover td {
+  background: rgba(255, 157, 0, 0.02);
+}
+
+/* Inputs styling for Gargantua Theme */
+body.gargantua-theme .premium-input {
+  background: rgba(8, 8, 10, 0.9);
+  border: 1.5px solid rgba(255, 157, 0, 0.25);
+  color: #f5f5f7;
+}
+
+body.gargantua-theme .premium-input:focus {
+  border-color: #ff9d00;
+  box-shadow: 0 0 8px rgba(255, 157, 0, 0.25);
+}
+
+/* Badge styling for Gargantua Theme */
+body.gargantua-theme .badge-pill {
+  border-radius: 8px;
+}
+
+body.gargantua-theme .badge-info {
+  background: rgba(255, 157, 0, 0.08);
+  color: #ff9d00;
+  border: 1px solid rgba(255, 157, 0, 0.25);
+}
+
+body.gargantua-theme .theme-pill-group {
+  background: rgba(255, 157, 0, 0.08);
+  border-color: rgba(255, 157, 0, 0.15);
+}
+
+body.gargantua-theme .theme-pill-btn.active {
+  background: #ff9d00;
+  color: #0e0d12;
+  box-shadow: 0 3px 8px rgba(255, 157, 0, 0.3);
+}
+
+/* Accretion Disk HTML Container & Styles */
+.gargantua-singularity-container {
+  position: fixed;
+  top: 55%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.65;
+  display: none;
+  overflow: visible;
+}
+
+body.gargantua-theme .gargantua-singularity-container {
+  display: block;
+}
+
+.gargantua-singularity {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 130px;
+  height: 130px;
+  background: #000000;
+  border-radius: 50%;
+  box-shadow: 0 0 50px 15px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 157, 0, 0.2);
+}
+
+.gargantua-disk {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 480px;
+  height: 100px;
+  margin-left: -240px;
+  margin-top: -50px;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 30px 4px #ff9d00, 
+    0 0 65px 12px #ff5e00, 
+    inset 0 0 45px #ff9d00,
+    0 0 110px 30px rgba(157, 78, 221, 0.25);
+  transform: rotateX(72deg) rotateY(12deg) rotateZ(0deg);
+  animation: rotate-disk 20s linear infinite;
+}
+
+@keyframes rotate-disk {
+  0% {
+    transform: rotateX(72deg) rotateY(12deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(72deg) rotateY(12deg) rotateZ(360deg);
+  }
+}
+
+/* Gravitational Pulling Photons Animation */
+.gargantua-photons {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+  display: none;
+}
+
+body.gargantua-theme .gargantua-photons {
+  display: block;
+}
+
+.photon-particle {
+  position: absolute;
+  background: radial-gradient(circle, #ffb703 0%, rgba(255, 157, 0, 0) 70%);
+  border-radius: 50%;
+  animation: pull-to-void linear infinite;
+  box-shadow: 0 0 8px #ff9d00;
+}
+
+@keyframes pull-to-void {
+  0% {
+    transform: translate(var(--p-start-x), var(--p-start-y)) scale(0.8);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--p-end-x), var(--p-end-y)) scale(0.15);
+    opacity: 0;
+  }
+}

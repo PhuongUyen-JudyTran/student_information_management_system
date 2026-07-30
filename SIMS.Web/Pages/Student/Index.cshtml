@@ -1,0 +1,541 @@
+@page
+@model SIMS.Web.Pages.Student.IndexModel
+@{
+    ViewData["Title"] = "Student Portal";
+}
+
+<div class="container-fluid p-0">
+    <div class="mb-4">
+        <h1 class="mb-1">Student Portal</h1>
+        <p class="text-muted m-0">Welcome back, @User.Identity?.Name! Manage your course registration and academic overview.</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="toast-alert toast-success">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>@Model.SuccessMessage</span>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="toast-alert toast-danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    <!-- Symmetrical Registration Tabs -->
+    <div class="premium-tabs mb-4">
+        <button class="premium-tab-btn active" onclick="switchTab('overviewTab', this)">Academic Overview</button>
+        <button class="premium-tab-btn" onclick="switchTab('recommendedTab', this)">Recommended Courses (@Model.RecommendedCourses.Count)</button>
+        <button class="premium-tab-btn" onclick="switchTab('catalogTab', this)">Full Course Catalog (@Model.AvailableCourses.Count)</button>
+        <button class="premium-tab-btn" onclick="switchTab('profileTab', this)">Personal Profile</button>
+    </div>
+
+    <!-- Tab 1: Academic Overview -->
+    <div id="overviewTab" class="tab-pane">
+        <div class="row g-4 mb-4">
+            <!-- GPA & Credits Card -->
+            <div class="col-12">
+                <div class="glass-card stat-card">
+                    <div>
+                        <span class="stat-label">Cumulative GPA</span>
+                        <div class="stat-value">@(Model.StudentProfile?.Record?.CumulativeGPA.ToString("0.00") ?? "0.00")</div>
+                    </div>
+                    <div>
+                        <span class="stat-label">Total Credits Earned</span>
+                        <div class="stat-value" style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            @(Model.StudentProfile?.Record?.TotalCreditsEarned ?? 0)
+                        </div>
+                    </div>
+                    <div>
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color: var(--accent-cyan);"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Courses Table -->
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <h3 class="m-0">My Enrolled Courses</h3>
+                <span class="badge-pill badge-info">@Model.EnrolledCourses.Count Enrolled</span>
+            </div>
+            
+            @if (!Model.EnrolledCourses.Any())
+            {
+                <div class="p-5 text-center">
+                    <h3 class="mb-2">No Active Enrollments</h3>
+                    <p class="text-muted mx-auto mb-4" style="max-width: 480px;">
+                        You are not currently enrolled in any courses. Check out your recommended courses or full catalog to select courses, calculate tuition, confirm payment in the modal, and enroll.
+                    </p>
+                    <button type="button" class="premium-btn py-2 px-4" onclick="switchTab('recommendedTab', document.querySelectorAll('.premium-tab-btn')[1])">
+                        Go to Recommended Courses & Pay Tuition
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Credits</th>
+                                <th>Enrollment Date</th>
+                                <th>Grade Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var course in Model.EnrolledCourses)
+                            {
+                                <tr>
+                                    <td><code>@course.CourseId</code></td>
+                                    <td class="font-weight-bold">@course.Title</td>
+                                    <td>@course.Credits</td>
+                                    <td>@course.EnrollmentDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                    <td>
+                                        @if (course.Grade == "Pending")
+                                        {
+                                            <span class="badge-pill badge-info">Pending</span>
+                                        }
+                                        else if (course.Grade == "F")
+                                        {
+                                            <span class="badge-pill badge-danger">Failed (F)</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-pill badge-success">Passed (@course.Grade)</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Tab 2: Recommended Courses (Strategy Pattern) -->
+    <div id="recommendedTab" class="tab-pane" style="display: none;">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h3 class="m-0">Recommended Courses</h3>
+                    <p class="text-muted m-0" style="font-size: 0.85rem;">Strategy Engine Recommendation: <strong class="text-info">@Model.ActiveStrategyName</strong></p>
+                </div>
+                <span class="badge-pill badge-info">@Model.RecommendedCourses.Count Recommended</span>
+            </div>
+
+            <!-- Recommended Checkout Bar -->
+            <div class="p-3 px-4 bg-dark bg-opacity-50 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-4">
+                    <div>
+                        <span class="text-muted" style="font-size: 0.85rem;">Selected Courses:</span>
+                        <strong id="recSelectedCount" class="ms-1 fs-5 text-warning">0 courses</strong>
+                    </div>
+                    <div>
+                        <span class="text-muted" style="font-size: 0.85rem;">Total Tuition Fee:</span>
+                        <strong id="recTotalFeeDisplay" class="ms-1 fs-4 text-success">0 VNĐ</strong>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="premium-btn py-2 px-3" style="background: rgba(255, 255, 255, 0.1);" onclick="selectAllAndPay('rec')">
+                        Select All & Pay
+                    </button>
+                    <button type="button" id="recPayButton" class="premium-btn py-2 px-4" disabled onclick="openPaymentModal('rec')">
+                        Pay Tuition
+                    </button>
+                    <form method="post" asp-page-handler="EnrollMultiple" id="recBatchEnrollForm">
+                        <input type="hidden" name="selectedCourseIds" id="recBatchSelectedCourseIds" />
+                        <button type="submit" id="recBatchEnrollButton" class="premium-btn py-2 px-4" style="display: none; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            Enroll All Paid Courses
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;" class="text-center">Select</th>
+                            <th>Code</th>
+                            <th>Recommended Course Title</th>
+                            <th>Credits</th>
+                            <th>Tuition Fee (VNĐ)</th>
+                            <th>Payment Status</th>
+                            <th>Action / Enroll</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.RecommendedCourses.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No recommended courses available for registration at this time.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var course in Model.RecommendedCourses)
+                            {
+                                var isEnrolled = Model.EnrolledCourses.Any(ec => string.Equals(ec.CourseId, course.CourseId, StringComparison.OrdinalIgnoreCase));
+                                <tr id="rec-row-@course.CourseId">
+                                    <td class="text-center">
+                                        @if (!isEnrolled)
+                                        {
+                                            <input type="checkbox" 
+                                                   class="course-checkbox rec-cb form-check-input" 
+                                                   value="@course.CourseId" 
+                                                   data-id="@course.CourseId"
+                                                   data-title="@course.Title"
+                                                   data-fee="@course.Fee"
+                                                   onchange="updateTotalFee('rec')" />
+                                        }
+                                    </td>
+                                    <td><code>@course.CourseId</code></td>
+                                    <td class="font-weight-bold">
+                                        @course.Title
+                                        <span class="badge-pill badge-info ms-2" style="font-size: 0.7rem;">Recommended</span>
+                                    </td>
+                                    <td>@course.Credits</td>
+                                    <td><strong style="color: #10b981;">@course.Fee.ToString("N0") VNĐ</strong></td>
+                                    <td>
+                                        @if (isEnrolled)
+                                        {
+                                            <span class="badge-pill badge-success">Enrolled</span>
+                                        }
+                                        else
+                                        {
+                                            <span id="rec-status-@course.CourseId" class="badge-pill badge-danger" style="opacity: 0.7;">Unpaid</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (isEnrolled)
+                                        {
+                                            <span class="text-muted" style="font-size: 0.85rem;">Registered</span>
+                                        }
+                                        else
+                                        {
+                                            <div id="rec-enroll-action-@course.CourseId" style="display: none;">
+                                                <form method="post" asp-page-handler="Enroll" style="display:inline;">
+                                                    <input type="hidden" name="courseId" value="@course.CourseId" />
+                                                    <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                                        Enroll
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Full Course Catalog -->
+    <div id="catalogTab" class="tab-pane" style="display: none;">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h3 class="m-0">Full Course Catalog</h3>
+                    <p class="text-muted m-0" style="font-size: 0.85rem;">Select courses -> Click Pay Tuition -> Confirm Payment in Modal -> Click Enroll to finalize registration</p>
+                </div>
+                <span class="badge-pill badge-success">@Model.AvailableCourses.Count Available Courses</span>
+            </div>
+
+            <!-- Full Catalog Checkout Bar -->
+            <div class="p-3 px-4 bg-dark bg-opacity-50 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-4">
+                    <div>
+                        <span class="text-muted" style="font-size: 0.85rem;">Selected Courses:</span>
+                        <strong id="selectedCount" class="ms-1 fs-5 text-warning">0 courses</strong>
+                    </div>
+                    <div>
+                        <span class="text-muted" style="font-size: 0.85rem;">Total Tuition Fee:</span>
+                        <strong id="totalFeeDisplay" class="ms-1 fs-4 text-success">0 VNĐ</strong>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="premium-btn py-2 px-3" style="background: rgba(255, 255, 255, 0.1);" onclick="selectAllAndPay('catalog')">
+                        Select All & Pay
+                    </button>
+                    <button type="button" id="payButton" class="premium-btn py-2 px-4" disabled onclick="openPaymentModal('catalog')">
+                        Pay Tuition
+                    </button>
+                    <form method="post" asp-page-handler="EnrollMultiple" id="batchEnrollForm">
+                        <input type="hidden" name="selectedCourseIds" id="batchSelectedCourseIds" />
+                        <button type="submit" id="batchEnrollButton" class="premium-btn py-2 px-4" style="display: none; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            Enroll All Paid Courses
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;" class="text-center">Select</th>
+                            <th>Code</th>
+                            <th>Course Title</th>
+                            <th>Credits</th>
+                            <th>Tuition Fee (VNĐ)</th>
+                            <th>Payment Status</th>
+                            <th>Action / Enroll</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.AvailableCourses.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No available courses for registration in the catalog at this time.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var course in Model.AvailableCourses)
+                            {
+                                var isEnrolled = Model.EnrolledCourses.Any(ec => string.Equals(ec.CourseId, course.CourseId, StringComparison.OrdinalIgnoreCase));
+                                <tr id="row-@course.CourseId">
+                                    <td class="text-center">
+                                        @if (!isEnrolled)
+                                        {
+                                            <input type="checkbox" 
+                                                   class="course-checkbox catalog-cb form-check-input" 
+                                                   value="@course.CourseId" 
+                                                   data-id="@course.CourseId"
+                                                   data-title="@course.Title"
+                                                   data-fee="@course.Fee"
+                                                   onchange="updateTotalFee('catalog')" />
+                                        }
+                                    </td>
+                                    <td><code>@course.CourseId</code></td>
+                                    <td class="font-weight-bold">@course.Title</td>
+                                    <td>@course.Credits</td>
+                                    <td><strong style="color: #10b981;">@course.Fee.ToString("N0") VNĐ</strong></td>
+                                    <td>
+                                        @if (isEnrolled)
+                                        {
+                                            <span class="badge-pill badge-success">Enrolled</span>
+                                        }
+                                        else
+                                        {
+                                            <span id="status-@course.CourseId" class="badge-pill badge-danger" style="opacity: 0.7;">Unpaid</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (isEnrolled)
+                                        {
+                                            <span class="text-muted" style="font-size: 0.85rem;">Registered</span>
+                                        }
+                                        else
+                                        {
+                                            <div id="enroll-action-@course.CourseId" style="display: none;">
+                                                <form method="post" asp-page-handler="Enroll" style="display:inline;">
+                                                    <input type="hidden" name="courseId" value="@course.CourseId" />
+                                                    <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                                        Enroll
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 4: Profile -->
+    <div id="profileTab" class="tab-pane" style="display: none;">
+        <div class="glass-card" style="max-width: 600px;">
+            <h3 class="mb-4">Academic Profile Details</h3>
+            <div class="row g-3" style="font-size: 1rem; line-height: 2;">
+                <div class="col-4 text-muted">Student ID:</div>
+                <div class="col-8 font-weight-bold"><code>@(Model.StudentProfile?.Id ?? "")</code></div>
+
+                <div class="col-4 text-muted">Username:</div>
+                <div class="col-8">@(Model.StudentProfile?.Username ?? "")</div>
+
+                <div class="col-4 text-muted">Email Address:</div>
+                <div class="col-8">@(Model.StudentProfile?.Email ?? "")</div>
+
+                <div class="col-4 text-muted">Date of Birth:</div>
+                <div class="col-8">@(Model.StudentProfile?.DateOfBirth.ToString("yyyy-MM-dd") ?? "")</div>
+
+                <div class="col-4 text-muted">Academic Program:</div>
+                <div class="col-8"><span class="badge-pill badge-info">@(Model.StudentProfile?.Program ?? "")</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Universal Payment Confirmation Modal -->
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-content-glass" style="max-width: 540px;">
+            <button class="modal-close-btn" onclick="closePaymentModal()">&times;</button>
+            <div class="text-center mb-3">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <h3 class="mt-2">Confirm Tuition Payment</h3>
+                <p class="text-muted" style="font-size: 0.9rem;">Please review your selected courses before confirming tuition payment</p>
+            </div>
+            
+            <div class="glass-card mb-4 p-3" style="background: rgba(0, 0, 0, 0.4);">
+                <ul id="paymentItemsList" class="list-group list-group-flush mb-3" style="background: transparent;">
+                    <!-- Items rendered dynamically via JS -->
+                </ul>
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary">
+                    <span class="font-weight-bold">Total Tuition Fee:</span>
+                    <strong id="modalTotalFee" class="fs-4 text-success">0 VNĐ</strong>
+                </div>
+            </div>
+
+            <p class="text-warning text-center small mb-4">
+                Are you sure you want to process the tuition payment for the selected courses above?
+            </p>
+
+            <div class="d-flex gap-3">
+                <button type="button" class="premium-btn w-50" style="background: rgba(255, 255, 255, 0.1);" onclick="closePaymentModal()">Cancel</button>
+                <button type="button" class="premium-btn w-50" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="confirmPayment()">
+                    Confirm Payment
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentMode = 'rec'; // 'rec' or 'catalog'
+
+        function switchTab(tabId, button) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            
+            button.closest('.premium-tabs').querySelectorAll('.premium-tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function getSelectedCheckboxes(mode) {
+            const selector = mode === 'rec' ? '.rec-cb:checked' : '.catalog-cb:checked';
+            return Array.from(document.querySelectorAll(selector));
+        }
+
+        function selectAllAndPay(mode) {
+            const selector = mode === 'rec' ? '.rec-cb:not(:disabled)' : '.catalog-cb:not(:disabled)';
+            document.querySelectorAll(selector).forEach(cb => cb.checked = true);
+            updateTotalFee(mode);
+            openPaymentModal(mode);
+        }
+
+        function updateTotalFee(mode) {
+            const checkboxes = getSelectedCheckboxes(mode);
+            let total = 0;
+            checkboxes.forEach(cb => {
+                total += parseFloat(cb.getAttribute('data-fee') || '0');
+            });
+
+            if (mode === 'rec') {
+                document.getElementById('recSelectedCount').innerText = `${checkboxes.length} courses`;
+                document.getElementById('recTotalFeeDisplay').innerText = `${total.toLocaleString('vi-VN')} VNĐ`;
+                document.getElementById('recPayButton').disabled = (checkboxes.length === 0);
+            } else {
+                document.getElementById('selectedCount').innerText = `${checkboxes.length} courses`;
+                document.getElementById('totalFeeDisplay').innerText = `${total.toLocaleString('vi-VN')} VNĐ`;
+                document.getElementById('payButton').disabled = (checkboxes.length === 0);
+            }
+        }
+
+        function openPaymentModal(mode) {
+            currentMode = mode;
+            const checkboxes = getSelectedCheckboxes(mode);
+            if (checkboxes.length === 0) return;
+
+            const itemsList = document.getElementById('paymentItemsList');
+            itemsList.innerHTML = '';
+            let total = 0;
+
+            checkboxes.forEach(cb => {
+                const title = cb.getAttribute('data-title');
+                const id = cb.getAttribute('data-id');
+                const fee = parseFloat(cb.getAttribute('data-fee') || '0');
+                total += fee;
+
+                const li = document.createElement('li');
+                li.className = 'list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center py-2 px-0';
+                li.innerHTML = `<div><strong>${id}</strong> - ${title}</div><div class="text-success">${fee.toLocaleString('vi-VN')} VNĐ</div>`;
+                itemsList.appendChild(li);
+            });
+
+            document.getElementById('modalTotalFee').innerText = `${total.toLocaleString('vi-VN')} VNĐ`;
+            document.getElementById('paymentModal').classList.add('active');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+        }
+
+        function confirmPayment() {
+            const checkboxes = getSelectedCheckboxes(currentMode);
+            const selectedIds = [];
+
+            checkboxes.forEach(cb => {
+                const id = cb.getAttribute('data-id');
+                selectedIds.push(id);
+
+                // Update Status UI for both tabs if course appears in both
+                const statusSpan = document.getElementById(`status-${id}`);
+                if (statusSpan) {
+                    statusSpan.className = 'badge-pill badge-success';
+                    statusSpan.innerText = 'Paid';
+                    statusSpan.style.opacity = '1';
+                }
+                const recStatusSpan = document.getElementById(`rec-status-${id}`);
+                if (recStatusSpan) {
+                    recStatusSpan.className = 'badge-pill badge-success';
+                    recStatusSpan.innerText = 'Paid';
+                    recStatusSpan.style.opacity = '1';
+                }
+
+                // Show Enroll Buttons in both lists
+                const enrollDiv = document.getElementById(`enroll-action-${id}`);
+                if (enrollDiv) enrollDiv.style.display = 'block';
+
+                const recEnrollDiv = document.getElementById(`rec-enroll-action-${id}`);
+                if (recEnrollDiv) recEnrollDiv.style.display = 'block';
+
+                cb.disabled = true;
+            });
+
+            // Update Master Batch Enroll button in Catalog / Rec tabs
+            if (selectedIds.length > 0) {
+                if (currentMode === 'catalog') {
+                    document.getElementById('batchSelectedCourseIds').value = selectedIds.join(',');
+                    document.getElementById('batchEnrollButton').style.display = 'inline-block';
+                } else if (currentMode === 'rec') {
+                    document.getElementById('recBatchSelectedCourseIds').value = selectedIds.join(',');
+                    document.getElementById('recBatchEnrollButton').style.display = 'inline-block';
+                }
+            }
+
+            closePaymentModal();
+            updateTotalFee(currentMode);
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+}

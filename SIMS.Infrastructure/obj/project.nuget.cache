@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "zrKBNWPA2eI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Trant\\OneDrive\\Desktop\\WebAppAssigntment\\App\\SIMS.Infrastructure\\SIMS.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Trant\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.10\\microsoft.extensions.configuration.abstractions.10.0.10.nupkg.sha512",
+    "C:\\Users\\Trant\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.10\\microsoft.extensions.dependencyinjection.abstractions.10.0.10.nupkg.sha512",
+    "C:\\Users\\Trant\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.10\\microsoft.extensions.primitives.10.0.10.nupkg.sha512"
+  ],
+  "logs": []
+}

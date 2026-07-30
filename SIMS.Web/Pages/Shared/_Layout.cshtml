@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SIMS Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Responsive Sidebar -->
+        <aside class="app-sidebar">
+            <div class="brand-section">
+                <div class="brand-icon">S</div>
+                <div class="brand-name font-weight-bold">SIMS Portal</div>
+            </div>
+
+            <ul class="nav-menu">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+
+                    if (role == "Administrator")
+                    {
+                        <li>
+                            <a class="nav-item-link @(Context.Request.Path.Value?.Contains("/Admin") == true ? "active" : "")" asp-page="/Admin/Index">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                                <span>Admin Panel</span>
+                            </a>
+                        </li>
+                    }
+                    else if (role == "Faculty")
+                    {
+                        <li>
+                            <a class="nav-item-link @(Context.Request.Path.Value?.Contains("/Faculty") == true ? "active" : "")" asp-page="/Faculty/Index">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                                <span>Faculty Portal</span>
+                            </a>
+                        </li>
+                    }
+                    else if (role == "Student")
+                    {
+                        <li>
+                            <a class="nav-item-link @(Context.Request.Path.Value?.Contains("/Student") == true ? "active" : "")" asp-page="/Student/Index">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span>Student Portal</span>
+                            </a>
+                        </li>
+                    }
+
+                    <li>
+                        <a class="nav-item-link" asp-page="/Account/Logout">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a class="nav-item-link @(Context.Request.Path.Value?.Contains("/Account/Login") == true ? "active" : "")" asp-page="/Account/Login">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                            <span>Sign In</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="sidebar-footer">
+                    <div class="user-badge">
+                        <div class="user-avatar">
+                            @(User.Identity.Name?.Substring(0, Math.Min(2, User.Identity.Name.Length)).ToUpper() ?? "U")
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name">@User.Identity.Name</span>
+                            <span class="user-role">@User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="app-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/anime-theme.js" asp-append-version="true"></script>
+</body>
+</html>

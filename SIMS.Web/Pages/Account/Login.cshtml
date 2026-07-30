@@ -1,0 +1,52 @@
+@page
+@model SIMS.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Sign In";
+}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+    <div class="glass-card" style="width: 100%; max-width: 420px;">
+        <div class="text-center mb-4">
+            <h2 class="mb-1">Welcome Back</h2>
+            <p class="text-muted" style="font-size: 0.9rem;">Sign in to your SIMS Portal account</p>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="toast-alert toast-success" style="margin-bottom: 1.5rem;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>@TempData["SuccessMessage"]</span>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="toast-alert toast-danger">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        }
+
+        <form method="post">
+            <div class="mb-3">
+                <label class="premium-label" for="username">Username</label>
+                <input class="premium-input" type="text" id="username" asp-for="Username" placeholder="Enter username" required autocomplete="username" />
+            </div>
+
+            <div class="mb-4">
+                <label class="premium-label" for="password">Password</label>
+                <input class="premium-input" type="password" id="password" asp-for="Password" placeholder="Enter password" required autocomplete="current-password" />
+            </div>
+
+            <button type="submit" class="premium-btn w-100 mb-3">
+                <span>Sign In</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+
+            <div class="text-center">
+                <span class="text-muted" style="font-size: 0.85rem;">Don't have an account? </span>
+                <a asp-page="/Account/Register" style="color: var(--accent-cyan); font-size: 0.85rem; text-decoration: none; font-weight: 500;">Sign Up as a Student</a>
+            </div>
+        </form>
+    </div>
+</div>

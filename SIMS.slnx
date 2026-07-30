@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SIMS.Tests/SIMS.Tests.csproj" />
+  <Project Path="SIMS.Web/SIMS.Web.csproj" />
+</Solution>

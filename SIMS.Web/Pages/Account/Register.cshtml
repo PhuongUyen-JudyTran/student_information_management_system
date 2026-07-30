@@ -1,0 +1,72 @@
+@page
+@model SIMS.Web.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Student Registration";
+}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height: 90vh; padding: 20px 0;">
+    <div class="glass-card" style="width: 100%; max-width: 480px;">
+        <div class="text-center mb-4">
+            <h2 class="mb-1">Create Student Account</h2>
+            <p class="text-muted" style="font-size: 0.9rem;">Sign up to enroll in university courses</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="toast-alert toast-danger">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>@Model.ErrorMessage</span>
+            </div>
+        }
+
+        <form method="post">
+            <div class="mb-3">
+                <label class="premium-label" for="username">Username</label>
+                <input class="premium-input" type="text" id="username" asp-for="Username" placeholder="Select username" required />
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="premium-label" for="password">Password</label>
+                    <input class="premium-input" type="password" id="password" asp-for="Password" placeholder="Min 6 characters" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="premium-label" for="confirmPassword">Confirm</label>
+                    <input class="premium-input" type="password" id="confirmPassword" asp-for="ConfirmPassword" placeholder="Repeat password" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="premium-label" for="email">Email Address</label>
+                <input class="premium-input" type="email" id="email" asp-for="Email" placeholder="student@university.edu" required />
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="premium-label" for="dob">Date of Birth</label>
+                    <input class="premium-input" type="date" id="dob" asp-for="DateOfBirth" required />
+                </div>
+                <div class="col-md-6">
+                    <label class="premium-label" for="program">Academic Program</label>
+                    <select class="premium-input" id="program" asp-for="Program" required>
+                        <option value="">-- Program --</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Honors Information Technology">Honors Information Technology</option>
+                        <option value="Business Management">Business Management</option>
+                        <option value="Honors Business Management">Honors Business Management</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="premium-btn w-100 mb-3">
+                <span>Sign Up</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            </button>
+
+            <div class="text-center">
+                <span class="text-muted" style="font-size: 0.85rem;">Already have an account? </span>
+                <a asp-page="/Account/Login" style="color: var(--accent-cyan); font-size: 0.85rem; text-decoration: none; font-weight: 500;">Sign In</a>
+            </div>
+        </form>
+    </div>
+</div>

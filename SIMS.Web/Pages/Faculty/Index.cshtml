@@ -1,0 +1,326 @@
+@page
+@model SIMS.Web.Pages.Faculty.IndexModel
+@{
+    ViewData["Title"] = "Faculty Portal";
+}
+
+<div class="container-fluid p-0">
+    <div class="mb-4">
+        <h1 class="mb-1">Faculty Portal</h1>
+        <p class="text-muted m-0">Welcome back, Professor @User.Identity?.Name! Manage your assigned courses, class rosters, and student grading.</p>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="toast-alert toast-success">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>@Model.SuccessMessage</span>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="toast-alert toast-danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    <!-- Premium Clean Tabs (No Emojis) -->
+    <div class="premium-tabs mb-4">
+        <button class="premium-tab-btn active" onclick="switchTab('assignedTab', this)">My Assigned Courses (@Model.Courses.Count)</button>
+        <button class="premium-tab-btn" onclick="switchTab('allSystemCoursesTab', this)">All System Courses (@Model.AllSystemCourses.Count)</button>
+    </div>
+
+    <!-- Tab 1: My Assigned Courses -->
+    <div id="assignedTab" class="tab-pane">
+        <div class="glass-card mb-4">
+            <h3 class="mb-3">Select Assigned Course Roster</h3>
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-9">
+                    <label class="premium-label" for="courseSelect">Your Assigned Courses</label>
+                    <select id="courseSelect" name="SelectedCourseId" class="premium-input" onchange="this.form.submit()">
+                        <option value="">-- Choose a Course to Manage Roster --</option>
+                        @foreach (var course in Model.Courses)
+                        {
+                            var count = Model.CourseEnrollmentCounts.ContainsKey(course.CourseId) ? Model.CourseEnrollmentCounts[course.CourseId] : 0;
+                            <option value="@course.CourseId" selected="@(course.CourseId == Model.SelectedCourseId ? "selected" : null)">
+                                @course.CourseId - @course.Title (@count / @course.MaxCapacity enrolled)
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="premium-btn w-100 py-2">Load Roster</button>
+                </div>
+            </form>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.SelectedCourseId))
+        {
+            var activeCourse = Model.Courses.FirstOrDefault(c => c.CourseId == Model.SelectedCourseId);
+            <div class="glass-card p-0 overflow-hidden mb-4">
+                <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div>
+                        <h3 class="m-0">Class Roster: @(activeCourse?.Title ?? Model.SelectedCourseId)</h3>
+                        <span class="text-muted" style="font-size: 0.85rem;">Course Code: <code>@Model.SelectedCourseId</code></span>
+                    </div>
+                    <span class="badge-pill badge-info">@Model.EnrolledStudents.Count Students Enrolled</span>
+                </div>
+
+                @if (!Model.EnrolledStudents.Any())
+                {
+                    <div class="p-5 text-center text-muted">
+                        No students are currently enrolled in this course section.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="glass-table">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Student Name</th>
+                                    <th>Email</th>
+                                    <th>Enrollment Date</th>
+                                    <th>Current Grade</th>
+                                    <th style="width: 250px;">Action / Grade Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var student in Model.EnrolledStudents)
+                                {
+                                    <tr>
+                                        <td><code>@student.StudentId</code></td>
+                                        <td class="font-weight-bold">@student.Username</td>
+                                        <td>@student.Email</td>
+                                        <td>@student.EnrollmentDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                        <td>
+                                            @if (student.Grade == "Pending")
+                                            {
+                                                <span class="badge-pill badge-info">Pending</span>
+                                            }
+                                            else if (student.Grade == "F")
+                                            {
+                                                <span class="badge-pill badge-danger">Failed (F)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-pill badge-success">Passed (@student.Grade)</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button" class="premium-btn py-1 px-3" style="font-size: 0.85rem;" 
+                                                    onclick="openGradeModal('@student.StudentId', '@student.Username', '@student.Grade')">
+                                                Assign Grade
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="glass-card p-5 text-center text-muted mb-4">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mb-3" style="color: var(--accent-cyan);"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <h3>Please select an assigned course from the dropdown above</h3>
+                <p class="m-0">You will be able to review student rosters and assign academic grades.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Tab 2: All System Courses & Detail Popup -->
+    <div id="allSystemCoursesTab" class="tab-pane" style="display: none;">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h3 class="m-0">All System Courses Catalog</h3>
+                    <p class="text-muted m-0" style="font-size: 0.85rem;">Complete list of university courses. Click "View Details" to inspect full course specs and instructor allocations.</p>
+                </div>
+                <span class="badge-pill badge-success">@Model.AllSystemCourses.Count Courses</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Course Title</th>
+                            <th>Credits</th>
+                            <th>Capacity / Enrolled</th>
+                            <th>Tuition Fee (VNĐ)</th>
+                            <th>Assigned Instructor</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.AllSystemCourses.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No courses available in system catalog.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var course in Model.AllSystemCourses)
+                            {
+                                var isAssignedToMe = string.Equals(course.FacultyId, User.FindFirst("UserId")?.Value, StringComparison.OrdinalIgnoreCase);
+                                <tr>
+                                    <td><code>@course.CourseId</code></td>
+                                    <td class="font-weight-bold">
+                                        @course.Title
+                                        @if (isAssignedToMe)
+                                        {
+                                            <span class="badge-pill badge-info ms-2" style="font-size: 0.7rem;">Your Course</span>
+                                        }
+                                    </td>
+                                    <td>@course.Credits</td>
+                                    <td>@course.EnrolledCount / @course.MaxCapacity</td>
+                                    <td><strong style="color: #10b981;">@course.Fee.ToString("N0") VNĐ</strong></td>
+                                    <td>
+                                        @if (course.FacultyName == "Unassigned")
+                                        {
+                                            <span class="badge-pill badge-danger" style="opacity: 0.7;">Unassigned</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-pill badge-success">@course.FacultyName</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);"
+                                                onclick="openCourseDetailsModal('@course.CourseId', '@course.Title', '@course.Credits', '@course.MaxCapacity', '@course.Fee.ToString("N0")', '@course.FacultyName', '@course.Department', '@course.EnrolledCount')">
+                                            View Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Modal -->
+    <div id="gradeModal" class="modal-overlay">
+        <div class="modal-content-glass" style="max-width: 480px;">
+            <button class="modal-close-btn" onclick="closeGradeModal()">&times;</button>
+            <h3 class="mb-3">Assign Academic Grade</h3>
+            <p class="text-muted mb-4" style="font-size: 0.9rem;">
+                Updating grade for student <strong id="modalStudentName" class="text-white"></strong> 
+                (ID: <code id="modalStudentId"></code>) in course <code>@Model.SelectedCourseId</code>.
+            </p>
+
+            <form method="post" asp-page-handler="UpdateGrade">
+                <input type="hidden" name="SelectedCourseId" value="@Model.SelectedCourseId" />
+                <input type="hidden" name="GradeStudentId" id="inputStudentId" />
+
+                <div class="mb-4">
+                    <label class="premium-label" for="gradeValue">Select Letter Grade</label>
+                    <select id="gradeValue" name="GradeValue" class="premium-input" required>
+                        <option value="">-- Choose Grade --</option>
+                        <option value="A">Grade A (Excellent - 4.0)</option>
+                        <option value="B">Grade B (Good - 3.0)</option>
+                        <option value="C">Grade C (Satisfactory - 2.0)</option>
+                        <option value="D">Grade D (Pass - 1.0)</option>
+                        <option value="F">Grade F (Fail - 0.0)</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="premium-btn w-50" style="background: rgba(255, 255, 255, 0.1);" onclick="closeGradeModal()">Cancel</button>
+                    <button type="submit" class="premium-btn w-50">Submit Grade</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Course Details Popup Modal -->
+    <div id="courseDetailsModal" class="modal-overlay">
+        <div class="modal-content-glass" style="max-width: 520px;">
+            <button class="modal-close-btn" onclick="closeCourseDetailsModal()">&times;</button>
+            <div class="text-center mb-3">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="1.5" class="mb-2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                <h3 class="mt-2" id="modalDetailCourseTitle">Course Title</h3>
+                <span class="badge-pill badge-info"><code id="modalDetailCourseId">COURSE CODE</code></span>
+            </div>
+
+            <div class="glass-card mb-4 p-4" style="background: rgba(0, 0, 0, 0.4);">
+                <div class="row g-3" style="font-size: 0.95rem; line-height: 1.8;">
+                    <div class="col-5 text-muted">Credits:</div>
+                    <div class="col-7 font-weight-bold" id="modalDetailCredits">0 Credits</div>
+
+                    <div class="col-5 text-muted">Max Capacity:</div>
+                    <div class="col-7 font-weight-bold" id="modalDetailCapacity">0 Students</div>
+
+                    <div class="col-5 text-muted">Tuition Fee:</div>
+                    <div class="col-7 font-weight-bold text-success fs-5" id="modalDetailFee">0 VNĐ</div>
+
+                    <div class="col-5 text-muted">Assigned Instructor:</div>
+                    <div class="col-7 font-weight-bold text-info" id="modalDetailFaculty">Unassigned</div>
+
+                    <div class="col-5 text-muted">Department:</div>
+                    <div class="col-7 font-weight-bold" id="modalDetailDepartment">Computing & Technology</div>
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="button" class="premium-btn w-100" style="background: rgba(255, 255, 255, 0.1);" onclick="closeCourseDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function switchTab(tabId, button) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            
+            button.closest('.premium-tabs').querySelectorAll('.premium-tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function openGradeModal(studentId, studentName, currentGrade) {
+            document.getElementById('inputStudentId').value = studentId;
+            document.getElementById('modalStudentId').innerText = studentId;
+            document.getElementById('modalStudentName').innerText = studentName;
+            
+            const gradeSelect = document.getElementById('gradeValue');
+            gradeSelect.value = (currentGrade && currentGrade !== 'Pending') ? currentGrade : '';
+
+            document.getElementById('gradeModal').classList.add('active');
+        }
+
+        function closeGradeModal() {
+            document.getElementById('gradeModal').classList.remove('active');
+        }
+
+        function openCourseDetailsModal(courseId, title, credits, capacity, fee, facultyName, department, enrolledCount) {
+            document.getElementById('modalDetailCourseId').innerText = courseId;
+            document.getElementById('modalDetailCourseTitle').innerText = title;
+            document.getElementById('modalDetailCredits').innerText = `${credits} Credits`;
+            document.getElementById('modalDetailCapacity').innerText = `${enrolledCount} / ${capacity} Enrolled`;
+            document.getElementById('modalDetailFee').innerText = `${fee} VNĐ`;
+            document.getElementById('modalDetailFaculty').innerText = facultyName;
+            document.getElementById('modalDetailDepartment').innerText = department;
+
+            document.getElementById('courseDetailsModal').classList.add('active');
+        }
+
+        function closeCourseDetailsModal() {
+            document.getElementById('courseDetailsModal').classList.remove('active');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+}

@@ -1,0 +1,684 @@
+@page
+@model SIMS.Web.Pages.Admin.IndexModel
+@using SIMS.Domain.Entities
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid p-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Administrator Dashboard</h1>
+            <p class="text-muted m-0">Manage system users by role, allocate faculty to courses, and control course catalog</p>
+        </div>
+        <button class="premium-btn py-2 px-4" onclick="openRegisterModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px; vertical-align: text-bottom;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            Register New Account
+        </button>
+    </div>
+
+    <!-- Toast Alerts -->
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="toast-alert toast-success">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <span>@Model.SuccessMessage</span>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="toast-alert toast-danger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>@Model.ErrorMessage</span>
+        </div>
+    }
+
+    <!-- 3 Role-Specific Tabs + Course Catalog Tab -->
+    <div class="premium-tabs mb-4">
+        <button class="premium-tab-btn active" onclick="switchTab('studentsTab', this)">Student Management (@Model.Students.Count)</button>
+        <button class="premium-tab-btn" onclick="switchTab('facultyTab', this)">Faculty Management (@Model.FacultyMembers.Count)</button>
+        <button class="premium-tab-btn" onclick="switchTab('adminsTab', this)">Admin Management (@Model.Admins.Count)</button>
+        <button class="premium-tab-btn" onclick="switchTab('coursesTab', this)">Course Catalog & Allocation (@Model.Courses.Count)</button>
+    </div>
+
+    <!-- Tab 1: Student Management -->
+    <div id="studentsTab" class="tab-pane">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <h3 class="m-0">Student Accounts</h3>
+                <span class="badge-pill badge-info">@Model.Students.Count Total Students</span>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Program</th>
+                            <th>Date of Birth</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Students.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No student accounts registered.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var student in Model.Students)
+                            {
+                                <tr>
+                                    <td><code>@student.Id</code></td>
+                                    <td class="font-weight-bold">@student.Username</td>
+                                    <td>@student.Email</td>
+                                    <td><span class="badge-pill badge-info">@student.Program</span></td>
+                                    <td>@student.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        <button class="premium-btn py-1 px-3" style="font-size: 0.85rem;"
+                                                onclick="openEditUserModal('@student.Id', '@student.Username', '@student.Email', 'Student', '@student.DateOfBirth.ToString("yyyy-MM-dd")', '@student.Program', '', '')">
+                                            Edit
+                                        </button>
+                                        <form method="post" asp-page-handler="DeleteUser" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete student @student.Username?')">
+                                            <input type="hidden" name="userId" value="@student.Id" />
+                                            <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Faculty Management -->
+    <div id="facultyTab" class="tab-pane" style="display: none;">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <h3 class="m-0">Faculty Accounts</h3>
+                <span class="badge-pill badge-success">@Model.FacultyMembers.Count Total Faculty</span>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Faculty ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Assigned Courses</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.FacultyMembers.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">No faculty accounts registered.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var faculty in Model.FacultyMembers)
+                            {
+                                var assignedCourses = Model.Courses.Where(c => string.Equals(c.FacultyId, faculty.Id, StringComparison.OrdinalIgnoreCase)).ToList();
+                                <tr>
+                                    <td><code>@faculty.Id</code></td>
+                                    <td class="font-weight-bold">@faculty.Username</td>
+                                    <td>@faculty.Email</td>
+                                    <td><span class="badge-pill badge-success">@faculty.Department</span></td>
+                                    <td>
+                                        @if (assignedCourses.Any())
+                                        {
+                                            @foreach (var course in assignedCourses)
+                                            {
+                                                <span class="badge-pill badge-info me-1">@course.CourseId</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted" style="font-size: 0.85rem;">Unassigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button class="premium-btn py-1 px-3" style="font-size: 0.85rem;"
+                                                onclick="openEditUserModal('@faculty.Id', '@faculty.Username', '@faculty.Email', 'Faculty', '', '', '@faculty.Department', '')">
+                                            Edit
+                                        </button>
+                                        <form method="post" asp-page-handler="DeleteUser" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete faculty member @faculty.Username?')">
+                                            <input type="hidden" name="userId" value="@faculty.Id" />
+                                            <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 3: Admin Management -->
+    <div id="adminsTab" class="tab-pane" style="display: none;">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                <h3 class="m-0">Administrator Accounts</h3>
+                <span class="badge-pill badge-danger">@Model.Admins.Count Total Admins</span>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Admin ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Admin Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Admins.Any())
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">No administrator accounts registered.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var admin in Model.Admins)
+                            {
+                                <tr>
+                                    <td><code>@admin.Id</code></td>
+                                    <td class="font-weight-bold">@admin.Username</td>
+                                    <td>@admin.Email</td>
+                                    <td><span class="badge-pill badge-danger">@admin.AdminLevel</span></td>
+                                    <td>
+                                        <button class="premium-btn py-1 px-3" style="font-size: 0.85rem;"
+                                                onclick="openEditUserModal('@admin.Id', '@admin.Username', '@admin.Email', 'Administrator', '', '', '', '@admin.AdminLevel')">
+                                            Edit
+                                        </button>
+                                        <form method="post" asp-page-handler="DeleteUser" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete admin @admin.Username?')">
+                                            <input type="hidden" name="userId" value="@admin.Id" />
+                                            <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 4: Course Catalog & Faculty Allocation -->
+    <div id="coursesTab" class="tab-pane" style="display: none;">
+        <div class="glass-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h3 class="m-0">Course Catalog & Allocation</h3>
+                <div class="d-flex gap-2">
+                    <button class="premium-btn py-2 px-3" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="openAssignFacultyModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px; vertical-align: text-bottom;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Assign Faculty
+                    </button>
+                    <button class="premium-btn py-2 px-4" onclick="openCreateCourseModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px; vertical-align: text-bottom;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Create New Course
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="glass-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Title</th>
+                            <th>Credits</th>
+                            <th>Capacity</th>
+                            <th>Tuition Fee (VNĐ)</th>
+                            <th>Assigned Faculty</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Courses.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No courses created yet.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var course in Model.Courses)
+                            {
+                                var assignedFaculty = Model.FacultyMembers.FirstOrDefault(f => string.Equals(f.Id, course.FacultyId, StringComparison.OrdinalIgnoreCase));
+                                <tr>
+                                    <td><code>@course.CourseId</code></td>
+                                    <td class="font-weight-bold">@course.Title</td>
+                                    <td>@course.Credits</td>
+                                    <td>@course.MaxCapacity</td>
+                                    <td><strong style="color: #10b981;">@course.Fee.ToString("N0") VNĐ</strong></td>
+                                    <td>
+                                        @if (assignedFaculty != null)
+                                        {
+                                            <span class="badge-pill badge-success">@assignedFaculty.Username (@assignedFaculty.Department)</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-pill badge-danger">Unassigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button class="premium-btn py-1 px-3" style="font-size: 0.85rem;"
+                                                onclick="openEditCourseModal('@course.CourseId', '@course.Title', '@course.Credits', '@course.MaxCapacity', '@course.Fee', '@course.FacultyId')">
+                                            Edit
+                                        </button>
+                                        <button class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);"
+                                                onclick="openQuickAssignModal('@course.CourseId', '@course.FacultyId')">
+                                            Assign
+                                        </button>
+                                        <form method="post" asp-page-handler="DeleteCourse" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete course @course.Title?')">
+                                            <input type="hidden" name="courseId" value="@course.CourseId" />
+                                            <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register User Modal -->
+    <div id="registerModal" class="modal-overlay">
+        <div class="modal-content-glass">
+            <button class="modal-close-btn" onclick="closeRegisterModal()">&times;</button>
+            <h3 class="mb-4">Register New User Account</h3>
+            <form method="post" asp-page-handler="RegisterUser">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="premium-label" for="regUsername">Username</label>
+                        <input class="premium-input" type="text" id="regUsername" asp-for="RegUsername" placeholder="e.g. johndoe" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="regPassword">Password</label>
+                        <input class="premium-input" type="password" id="regPassword" asp-for="RegPassword" placeholder="Minimum 6 chars" required />
+                    </div>
+                    <div class="col-12">
+                        <label class="premium-label" for="regEmail">Email Address</label>
+                        <input class="premium-input" type="email" id="regEmail" asp-for="RegEmail" placeholder="user@university.edu" required />
+                    </div>
+                    <div class="col-12">
+                        <label class="premium-label" for="regRole">System Role</label>
+                        <select class="premium-input" id="regRole" asp-for="RegRole" required onchange="toggleRoleFields(this.value)">
+                            <option value="">-- Select Role --</option>
+                            <option value="Student">Student</option>
+                            <option value="Faculty">Faculty</option>
+                            <option value="Administrator">Administrator</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Student Fields -->
+                    <div id="studentFields" style="display: none;" class="col-12">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="premium-label" for="regDOB">Date of Birth</label>
+                                <input class="premium-input" type="date" id="regDOB" asp-for="RegDOB" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="premium-label" for="regProgram">Academic Program</label>
+                                <select class="premium-input" id="regProgram" asp-for="RegProgram">
+                                    <option value="">-- Select Program --</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Honors Information Technology">Honors Information Technology</option>
+                                    <option value="Business Management">Business Management</option>
+                                    <option value="Honors Business Management">Honors Business Management</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Faculty Fields -->
+                    <div id="facultyFields" style="display: none;" class="col-12">
+                        <label class="premium-label" for="regDepartment">Department</label>
+                        <input class="premium-input" type="text" id="regDepartment" asp-for="RegDepartment" placeholder="e.g. Computing & Technology" />
+                    </div>
+
+                    <!-- Dynamic Admin Fields -->
+                    <div id="adminFields" style="display: none;" class="col-12">
+                        <label class="premium-label" for="regAdminLevel">Administrator Level</label>
+                        <input class="premium-input" type="text" id="regAdminLevel" asp-for="RegAdminLevel" placeholder="e.g. Registrar, SuperAdmin" />
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="premium-btn w-100">Register Account</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal-overlay">
+        <div class="modal-content-glass">
+            <button class="modal-close-btn" onclick="closeEditUserModal()">&times;</button>
+            <h3 class="mb-4">Edit User Account</h3>
+            <form method="post" asp-page-handler="EditUser">
+                <input type="hidden" id="editUserId" asp-for="EditUserId" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="premium-label">Username</label>
+                        <input class="premium-input" type="text" id="editUserUsername" readonly style="opacity: 0.7; cursor: not-allowed;" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label">Role</label>
+                        <input class="premium-input" type="text" id="editUserRole" readonly style="opacity: 0.7; cursor: not-allowed;" />
+                    </div>
+                    <div class="col-12">
+                        <label class="premium-label" for="editEmail">Email Address</label>
+                        <input class="premium-input" type="email" id="editEmail" asp-for="EditEmail" required />
+                    </div>
+
+                    <!-- Dynamic Edit Student Fields -->
+                    <div id="editStudentFields" style="display: none;" class="col-12">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="premium-label" for="editDOB">Date of Birth</label>
+                                <input class="premium-input" type="date" id="editDOB" asp-for="EditDOB" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="premium-label" for="editProgram">Academic Program</label>
+                                <select class="premium-input" id="editProgram" asp-for="EditProgram">
+                                    <option value="">-- Select Program --</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Honors Information Technology">Honors Information Technology</option>
+                                    <option value="Business Management">Business Management</option>
+                                    <option value="Honors Business Management">Honors Business Management</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Edit Faculty Fields -->
+                    <div id="editFacultyFields" style="display: none;" class="col-12">
+                        <label class="premium-label" for="editDepartment">Department</label>
+                        <input class="premium-input" type="text" id="editDepartment" asp-for="EditDepartment" placeholder="e.g. Computing & Technology" />
+                    </div>
+
+                    <!-- Dynamic Edit Admin Fields -->
+                    <div id="editAdminFields" style="display: none;" class="col-12">
+                        <label class="premium-label" for="editAdminLevel">Administrator Level</label>
+                        <input class="premium-input" type="text" id="editAdminLevel" asp-for="EditAdminLevel" placeholder="e.g. Registrar, SuperAdmin" />
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="premium-btn w-100">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Course Modal -->
+    <div id="createCourseModal" class="modal-overlay">
+        <div class="modal-content-glass">
+            <button class="modal-close-btn" onclick="closeCreateCourseModal()">&times;</button>
+            <h3 class="mb-4">Create New Course</h3>
+            <form method="post" asp-page-handler="CreateCourse">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="premium-label" for="courseId">Course ID / Code</label>
+                        <input class="premium-input" type="text" id="courseId" asp-for="CourseId" placeholder="e.g. CS101, CS301" required />
+                    </div>
+                    <div class="col-12">
+                        <label class="premium-label" for="courseTitle">Course Title</label>
+                        <input class="premium-input" type="text" id="courseTitle" asp-for="CourseTitle" placeholder="e.g. Introduction to Programming" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="courseCredits">Credits</label>
+                        <input class="premium-input" type="number" id="courseCredits" asp-for="CourseCredits" min="1" max="6" required onchange="autoCalculateFee()" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="courseCapacity">Max Capacity</label>
+                        <input class="premium-input" type="number" id="courseCapacity" asp-for="CourseCapacity" min="5" max="100" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="courseFee">Tuition Fee (VNĐ)</label>
+                        <input class="premium-input" type="number" id="courseFee" asp-for="CourseFee" step="50000" min="0" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="courseFacultyId">Assigned Faculty</label>
+                        <select class="premium-input" id="courseFacultyId" asp-for="CourseFacultyId">
+                            <option value="">-- Unassigned --</option>
+                            @foreach (var faculty in Model.FacultyMembers)
+                            {
+                                <option value="@faculty.Id">@faculty.Username (@faculty.Department)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="premium-btn w-100">Create Course</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Course Modal -->
+    <div id="editCourseModal" class="modal-overlay">
+        <div class="modal-content-glass">
+            <button class="modal-close-btn" onclick="closeEditCourseModal()">&times;</button>
+            <h3 class="mb-4">Edit Course</h3>
+            <form method="post" asp-page-handler="EditCourse">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="premium-label">Course ID</label>
+                        <input class="premium-input" type="text" id="editCourseId" asp-for="EditCourseId" readonly style="opacity: 0.7; cursor: not-allowed;" />
+                    </div>
+                    <div class="col-12">
+                        <label class="premium-label" for="editCourseTitle">Course Title</label>
+                        <input class="premium-input" type="text" id="editCourseTitle" asp-for="EditCourseTitle" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="editCourseCredits">Credits</label>
+                        <input class="premium-input" type="number" id="editCourseCredits" asp-for="EditCourseCredits" min="1" max="6" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="editCourseCapacity">Max Capacity</label>
+                        <input class="premium-input" type="number" id="editCourseCapacity" asp-for="EditCourseCapacity" min="5" max="100" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="editCourseFee">Tuition Fee (VNĐ)</label>
+                        <input class="premium-input" type="number" id="editCourseFee" asp-for="EditCourseFee" step="50000" min="0" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="premium-label" for="editCourseFacultyId">Assigned Faculty</label>
+                        <select class="premium-input" id="editCourseFacultyId" asp-for="EditCourseFacultyId">
+                            <option value="">-- Unassigned --</option>
+                            @foreach (var faculty in Model.FacultyMembers)
+                            {
+                                <option value="@faculty.Id">@faculty.Username (@faculty.Department)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="premium-btn w-100">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Assign Faculty Modal -->
+    <div id="assignFacultyModal" class="modal-overlay">
+        <div class="modal-content-glass">
+            <button class="modal-close-btn" onclick="closeAssignFacultyModal()">&times;</button>
+            <h3 class="mb-4">Assign Faculty to Course</h3>
+            <form method="post" asp-page-handler="AssignFaculty">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="premium-label" for="assignCourseId">Select Course</label>
+                        <select class="premium-input" id="assignCourseId" asp-for="AssignCourseId" required>
+                            <option value="">-- Choose Course --</option>
+                            @foreach (var course in Model.Courses)
+                            {
+                                <option value="@course.CourseId">@course.CourseId - @course.Title</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="premium-label" for="assignFacultyId">Select Faculty Instructor</label>
+                        <select class="premium-input" id="assignFacultyId" asp-for="AssignFacultyId">
+                            <option value="">-- Unassign / Clear Instructor --</option>
+                            @foreach (var faculty in Model.FacultyMembers)
+                            {
+                                <option value="@faculty.Id">@faculty.Username (@faculty.Department)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="premium-btn w-100" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">Save Faculty Allocation</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function switchTab(tabId, button) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            
+            button.closest('.premium-tabs').querySelectorAll('.premium-tab-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function autoCalculateFee() {
+            const credits = parseInt(document.getElementById('courseCredits').value) || 3;
+            document.getElementById('courseFee').value = credits * 500000;
+        }
+
+        function toggleRoleFields(role) {
+            document.getElementById('studentFields').style.display = (role === 'Student') ? 'block' : 'none';
+            document.getElementById('facultyFields').style.display = (role === 'Faculty') ? 'block' : 'none';
+            document.getElementById('adminFields').style.display = (role === 'Administrator') ? 'block' : 'none';
+
+            document.getElementById('regDOB').required = (role === 'Student');
+            document.getElementById('regProgram').required = (role === 'Student');
+            document.getElementById('regDepartment').required = (role === 'Faculty');
+            document.getElementById('regAdminLevel').required = (role === 'Administrator');
+        }
+
+        function toggleEditRoleFields(role) {
+            document.getElementById('editStudentFields').style.display = (role === 'Student') ? 'block' : 'none';
+            document.getElementById('editFacultyFields').style.display = (role === 'Faculty') ? 'block' : 'none';
+            document.getElementById('editAdminFields').style.display = (role === 'Administrator') ? 'block' : 'none';
+
+            document.getElementById('editDOB').required = (role === 'Student');
+            document.getElementById('editProgram').required = (role === 'Student');
+            document.getElementById('editDepartment').required = (role === 'Faculty');
+            document.getElementById('editAdminLevel').required = (role === 'Administrator');
+        }
+
+        // Register User Modal
+        function openRegisterModal() {
+            document.getElementById('registerModal').classList.add('active');
+        }
+        function closeRegisterModal() {
+            document.getElementById('registerModal').classList.remove('active');
+        }
+
+        // Create Course Modal
+        function openCreateCourseModal() {
+            autoCalculateFee();
+            document.getElementById('createCourseModal').classList.add('active');
+        }
+        function closeCreateCourseModal() {
+            document.getElementById('createCourseModal').classList.remove('active');
+        }
+
+        // Assign Faculty Modal
+        function openAssignFacultyModal() {
+            document.getElementById('assignFacultyModal').classList.add('active');
+        }
+        function openQuickAssignModal(courseId, facultyId) {
+            document.getElementById('assignCourseId').value = courseId;
+            document.getElementById('assignFacultyId').value = facultyId || '';
+            openAssignFacultyModal();
+        }
+        function closeAssignFacultyModal() {
+            document.getElementById('assignFacultyModal').classList.remove('active');
+        }
+
+        // Edit User Modal
+        function openEditUserModal(userId, username, email, role, dob, program, department, adminLevel) {
+            document.getElementById('editUserId').value = userId;
+            document.getElementById('editUserUsername').value = username;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editUserRole').value = role;
+
+            toggleEditRoleFields(role);
+
+            if (role === 'Student') {
+                document.getElementById('editDOB').value = dob;
+                document.getElementById('editProgram').value = program;
+            } else if (role === 'Faculty') {
+                document.getElementById('editDepartment').value = department;
+            } else if (role === 'Administrator') {
+                document.getElementById('editAdminLevel').value = adminLevel;
+            }
+
+            document.getElementById('editUserModal').classList.add('active');
+        }
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+        }
+
+        // Edit Course Modal
+        function openEditCourseModal(courseId, title, credits, capacity, fee, facultyId) {
+            document.getElementById('editCourseId').value = courseId;
+            document.getElementById('editCourseTitle').value = title;
+            document.getElementById('editCourseCredits').value = credits;
+            document.getElementById('editCourseCapacity').value = capacity;
+            document.getElementById('editCourseFee').value = fee || (credits * 500000);
+            document.getElementById('editCourseFacultyId').value = facultyId || '';
+
+            document.getElementById('editCourseModal').classList.add('active');
+        }
+        function closeEditCourseModal() {
+            document.getElementById('editCourseModal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside modal-content-glass
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const roleSelect = document.getElementById('regRole');
+            if (roleSelect) {
+                toggleRoleFields(roleSelect.value);
+            }
+        });
+    </script>
+}
