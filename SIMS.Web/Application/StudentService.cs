@@ -92,6 +92,7 @@ namespace SIMS.Application
             if (existing != null)
             {
                 existing.IsPaid = true;
+                existing.Grade = "Pending";
                 return await _enrollmentRepository.UpdateAsync(existing);
             }
 
@@ -121,6 +122,10 @@ namespace SIMS.Application
                 if (existing != null)
                 {
                     existing.IsPaid = true;
+                    if (string.Equals(existing.Grade, "Unenrolled", StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(existing.Grade))
+                    {
+                        existing.Grade = "Unenrolled";
+                    }
                     await _enrollmentRepository.UpdateAsync(existing);
                     anySuccess = true;
                 }
@@ -131,7 +136,7 @@ namespace SIMS.Application
                         StudentId = studentId,
                         CourseId = courseId,
                         EnrollmentDate = DateTime.Now,
-                        Grade = "Pending",
+                        Grade = "Unenrolled",
                         IsPaid = true
                     };
                     enrollment.Validate();
@@ -172,9 +177,12 @@ namespace SIMS.Application
         {
             var allCourses = await _courseRepository.GetAllAsync();
             var enrollments = await _enrollmentRepository.GetByStudentIdAsync(studentId) ?? new List<Enrollment>();
-            var enrolledCourseIds = enrollments.Select(e => e.CourseId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var fullyEnrolledCourseIds = enrollments
+                .Where(e => !string.Equals(e.Grade, "Unenrolled", StringComparison.OrdinalIgnoreCase))
+                .Select(e => e.CourseId)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            return allCourses.Where(c => !enrolledCourseIds.Contains(c.CourseId)).ToList();
+            return allCourses.Where(c => !fullyEnrolledCourseIds.Contains(c.CourseId)).ToList();
         }
 
         public async Task<bool> EnrollInCoursesAsync(string studentId, List<string> courseIds)

@@ -75,15 +75,18 @@ namespace SIMS.Web.Pages.Student
                     PaidCourseIds.Add(enrollment.CourseId);
                 }
 
-                var course = await _courseRepository.GetByIdAsync(enrollment.CourseId);
-                EnrolledCourses.Add(new EnrolledCourseDetail
+                if (!string.Equals(enrollment.Grade, "Unenrolled", StringComparison.OrdinalIgnoreCase))
                 {
-                    CourseId = enrollment.CourseId,
-                    Title = course?.Title ?? "Unknown Course",
-                    Credits = course?.Credits ?? 0,
-                    EnrollmentDate = enrollment.EnrollmentDate,
-                    Grade = enrollment.Grade
-                });
+                    var course = await _courseRepository.GetByIdAsync(enrollment.CourseId);
+                    EnrolledCourses.Add(new EnrolledCourseDetail
+                    {
+                        CourseId = enrollment.CourseId,
+                        Title = course?.Title ?? "Unknown Course",
+                        Credits = course?.Credits ?? 0,
+                        EnrollmentDate = enrollment.EnrollmentDate,
+                        Grade = enrollment.Grade
+                    });
+                }
             }
 
             AvailableCourses = await _studentService.GetAvailableCoursesForStudentAsync(userId);
