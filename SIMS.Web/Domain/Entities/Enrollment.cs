@@ -9,6 +9,7 @@ namespace SIMS.Domain.Entities
         public string CourseId { get; set; } = string.Empty;
         public DateTime EnrollmentDate { get; set; } = DateTime.UtcNow;
         public string Grade { get; set; } = "Pending";
+        public bool IsPaid { get; set; } = false;
 
         public void Validate()
         {

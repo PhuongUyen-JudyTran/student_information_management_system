@@ -183,9 +183,10 @@
                             @foreach (var course in Model.RecommendedCourses)
                             {
                                 var isEnrolled = Model.EnrolledCourses.Any(ec => string.Equals(ec.CourseId, course.CourseId, StringComparison.OrdinalIgnoreCase));
+                                var isPaid = Model.PaidCourseIds.Contains(course.CourseId);
                                 <tr id="rec-row-@course.CourseId">
                                     <td class="text-center">
-                                        @if (!isEnrolled)
+                                        @if (!isEnrolled && !isPaid)
                                         {
                                             <input type="checkbox" 
                                                    class="course-checkbox rec-cb form-check-input" 
@@ -194,6 +195,10 @@
                                                    data-title="@course.Title"
                                                    data-fee="@course.Fee"
                                                    onchange="updateTotalFee('rec')" />
+                                        }
+                                        else if (isPaid && !isEnrolled)
+                                        {
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                                         }
                                     </td>
                                     <td><code>@course.CourseId</code></td>
@@ -208,6 +213,10 @@
                                         {
                                             <span class="badge-pill badge-success">Enrolled</span>
                                         }
+                                        else if (isPaid)
+                                        {
+                                            <span class="badge-pill badge-success">Paid</span>
+                                        }
                                         else
                                         {
                                             <span id="rec-status-@course.CourseId" class="badge-pill badge-danger" style="opacity: 0.7;">Unpaid</span>
@@ -217,6 +226,17 @@
                                         @if (isEnrolled)
                                         {
                                             <span class="text-muted" style="font-size: 0.85rem;">Registered</span>
+                                        }
+                                        else if (isPaid)
+                                        {
+                                            <div id="rec-enroll-action-@course.CourseId">
+                                                <form method="post" asp-page-handler="Enroll" style="display:inline;">
+                                                    <input type="hidden" name="courseId" value="@course.CourseId" />
+                                                    <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                                        Enroll
+                                                    </button>
+                                                </form>
+                                            </div>
                                         }
                                         else
                                         {
@@ -303,9 +323,10 @@
                             @foreach (var course in Model.AvailableCourses)
                             {
                                 var isEnrolled = Model.EnrolledCourses.Any(ec => string.Equals(ec.CourseId, course.CourseId, StringComparison.OrdinalIgnoreCase));
+                                var isPaid = Model.PaidCourseIds.Contains(course.CourseId);
                                 <tr id="row-@course.CourseId">
                                     <td class="text-center">
-                                        @if (!isEnrolled)
+                                        @if (!isEnrolled && !isPaid)
                                         {
                                             <input type="checkbox" 
                                                    class="course-checkbox catalog-cb form-check-input" 
@@ -314,6 +335,10 @@
                                                    data-title="@course.Title"
                                                    data-fee="@course.Fee"
                                                    onchange="updateTotalFee('catalog')" />
+                                        }
+                                        else if (isPaid && !isEnrolled)
+                                        {
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                                         }
                                     </td>
                                     <td><code>@course.CourseId</code></td>
@@ -325,6 +350,10 @@
                                         {
                                             <span class="badge-pill badge-success">Enrolled</span>
                                         }
+                                        else if (isPaid)
+                                        {
+                                            <span class="badge-pill badge-success">Paid</span>
+                                        }
                                         else
                                         {
                                             <span id="status-@course.CourseId" class="badge-pill badge-danger" style="opacity: 0.7;">Unpaid</span>
@@ -334,6 +363,17 @@
                                         @if (isEnrolled)
                                         {
                                             <span class="text-muted" style="font-size: 0.85rem;">Registered</span>
+                                        }
+                                        else if (isPaid)
+                                        {
+                                            <div id="enroll-action-@course.CourseId">
+                                                <form method="post" asp-page-handler="Enroll" style="display:inline;">
+                                                    <input type="hidden" name="courseId" value="@course.CourseId" />
+                                                    <button type="submit" class="premium-btn py-1 px-3" style="font-size: 0.85rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                                                        Enroll
+                                                    </button>
+                                                </form>
+                                            </div>
                                         }
                                         else
                                         {
@@ -403,12 +443,15 @@
                 Are you sure you want to process the tuition payment for the selected courses above?
             </p>
 
-            <div class="d-flex gap-3">
-                <button type="button" class="premium-btn w-50" style="background: rgba(255, 255, 255, 0.1);" onclick="closePaymentModal()">Cancel</button>
-                <button type="button" class="premium-btn w-50" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);" onclick="confirmPayment()">
-                    Confirm Payment
-                </button>
-            </div>
+            <form method="post" asp-page-handler="ConfirmPayment" id="confirmPaymentForm">
+                <input type="hidden" name="confirmCourseIds" id="modalConfirmCourseIds" />
+                <div class="d-flex gap-3">
+                    <button type="button" class="premium-btn w-50" style="background: rgba(255, 255, 255, 0.1);" onclick="closePaymentModal()">Cancel</button>
+                    <button type="submit" class="premium-btn w-50" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        Confirm Payment
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -463,12 +506,14 @@
             const itemsList = document.getElementById('paymentItemsList');
             itemsList.innerHTML = '';
             let total = 0;
+            const selectedIds = [];
 
             checkboxes.forEach(cb => {
                 const title = cb.getAttribute('data-title');
                 const id = cb.getAttribute('data-id');
                 const fee = parseFloat(cb.getAttribute('data-fee') || '0');
                 total += fee;
+                selectedIds.push(id);
 
                 const li = document.createElement('li');
                 li.className = 'list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center py-2 px-0';
@@ -476,59 +521,13 @@
                 itemsList.appendChild(li);
             });
 
+            document.getElementById('modalConfirmCourseIds').value = selectedIds.join(',');
             document.getElementById('modalTotalFee').innerText = `${total.toLocaleString('vi-VN')} VNĐ`;
             document.getElementById('paymentModal').classList.add('active');
         }
 
         function closePaymentModal() {
             document.getElementById('paymentModal').classList.remove('active');
-        }
-
-        function confirmPayment() {
-            const checkboxes = getSelectedCheckboxes(currentMode);
-            const selectedIds = [];
-
-            checkboxes.forEach(cb => {
-                const id = cb.getAttribute('data-id');
-                selectedIds.push(id);
-
-                // Update Status UI for both tabs if course appears in both
-                const statusSpan = document.getElementById(`status-${id}`);
-                if (statusSpan) {
-                    statusSpan.className = 'badge-pill badge-success';
-                    statusSpan.innerText = 'Paid';
-                    statusSpan.style.opacity = '1';
-                }
-                const recStatusSpan = document.getElementById(`rec-status-${id}`);
-                if (recStatusSpan) {
-                    recStatusSpan.className = 'badge-pill badge-success';
-                    recStatusSpan.innerText = 'Paid';
-                    recStatusSpan.style.opacity = '1';
-                }
-
-                // Show Enroll Buttons in both lists
-                const enrollDiv = document.getElementById(`enroll-action-${id}`);
-                if (enrollDiv) enrollDiv.style.display = 'block';
-
-                const recEnrollDiv = document.getElementById(`rec-enroll-action-${id}`);
-                if (recEnrollDiv) recEnrollDiv.style.display = 'block';
-
-                cb.disabled = true;
-            });
-
-            // Update Master Batch Enroll button in Catalog / Rec tabs
-            if (selectedIds.length > 0) {
-                if (currentMode === 'catalog') {
-                    document.getElementById('batchSelectedCourseIds').value = selectedIds.join(',');
-                    document.getElementById('batchEnrollButton').style.display = 'inline-block';
-                } else if (currentMode === 'rec') {
-                    document.getElementById('recBatchSelectedCourseIds').value = selectedIds.join(',');
-                    document.getElementById('recBatchEnrollButton').style.display = 'inline-block';
-                }
-            }
-
-            closePaymentModal();
-            updateTotalFee(currentMode);
         }
 
         // Close modal when clicking outside

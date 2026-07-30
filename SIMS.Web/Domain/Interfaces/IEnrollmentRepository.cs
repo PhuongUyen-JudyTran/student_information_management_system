@@ -9,6 +9,7 @@ namespace SIMS.Domain.Interfaces
         Task<List<Enrollment>> GetByStudentIdAsync(string studentId);
         Task<List<Enrollment>> GetByCourseIdAsync(string courseId);
         Task<bool> AddAsync(Enrollment enrollment);
+        Task<bool> UpdateAsync(Enrollment enrollment);
         Task<bool> DeleteAsync(string studentId, string courseId);
     }
 }

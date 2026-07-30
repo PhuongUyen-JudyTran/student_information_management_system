@@ -86,22 +86,61 @@ namespace SIMS.Application
         {
             if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId)) return false;
 
-            var student = await _studentRepository.GetByIdAsync(studentId);
-            if (student == null) return false;
+            var existingEnrollments = await _enrollmentRepository.GetByStudentIdAsync(studentId);
+            var existing = existingEnrollments?.FirstOrDefault(e => string.Equals(e.CourseId, courseId, StringComparison.OrdinalIgnoreCase));
 
-            var course = await _courseRepository.GetByIdAsync(courseId);
-            if (course == null) return false;
+            if (existing != null)
+            {
+                existing.IsPaid = true;
+                return await _enrollmentRepository.UpdateAsync(existing);
+            }
 
             var enrollment = new Enrollment
             {
                 StudentId = studentId,
                 CourseId = courseId,
                 EnrollmentDate = DateTime.Now,
-                Grade = "Pending"
+                Grade = "Pending",
+                IsPaid = true
             };
 
             enrollment.Validate();
             return await _enrollmentRepository.AddAsync(enrollment);
+        }
+
+        public async Task<bool> ConfirmPaymentAsync(string studentId, List<string> courseIds)
+        {
+            if (string.IsNullOrWhiteSpace(studentId) || courseIds == null || !courseIds.Any()) return false;
+
+            var existingEnrollments = await _enrollmentRepository.GetByStudentIdAsync(studentId) ?? new List<Enrollment>();
+            bool anySuccess = false;
+
+            foreach (var courseId in courseIds)
+            {
+                var existing = existingEnrollments.FirstOrDefault(e => string.Equals(e.CourseId, courseId, StringComparison.OrdinalIgnoreCase));
+                if (existing != null)
+                {
+                    existing.IsPaid = true;
+                    await _enrollmentRepository.UpdateAsync(existing);
+                    anySuccess = true;
+                }
+                else
+                {
+                    var enrollment = new Enrollment
+                    {
+                        StudentId = studentId,
+                        CourseId = courseId,
+                        EnrollmentDate = DateTime.Now,
+                        Grade = "Pending",
+                        IsPaid = true
+                    };
+                    enrollment.Validate();
+                    var added = await _enrollmentRepository.AddAsync(enrollment);
+                    if (added) anySuccess = true;
+                }
+            }
+
+            return anySuccess;
         }
 
         public async Task<bool> AutoEnrollCoursesAsync(string studentId)

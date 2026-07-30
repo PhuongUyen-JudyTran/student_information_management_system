@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SIMS.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e1da24c905b7f4a76d85983dcd766890a13715b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("SIMS.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SIMS.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

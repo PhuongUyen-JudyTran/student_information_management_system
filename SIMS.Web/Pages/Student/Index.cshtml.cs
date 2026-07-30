@@ -33,6 +33,7 @@ namespace SIMS.Web.Pages.Student
         public List<EnrolledCourseDetail> EnrolledCourses { get; set; } = new List<EnrolledCourseDetail>();
         public List<Course> AvailableCourses { get; set; } = new List<Course>();
         public List<Course> RecommendedCourses { get; set; } = new List<Course>();
+        public HashSet<string> PaidCourseIds { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         public string ActiveStrategyName { get; set; } = "Standard Academic Assignment Strategy";
 
         public string SuccessMessage { get; set; } = string.Empty;
@@ -69,6 +70,11 @@ namespace SIMS.Web.Pages.Student
 
             foreach (var enrollment in StudentProfile.Enrollments)
             {
+                if (enrollment.IsPaid)
+                {
+                    PaidCourseIds.Add(enrollment.CourseId);
+                }
+
                 var course = await _courseRepository.GetByIdAsync(enrollment.CourseId);
                 EnrolledCourses.Add(new EnrolledCourseDetail
                 {
@@ -95,6 +101,42 @@ namespace SIMS.Web.Pages.Student
             }
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostConfirmPaymentAsync([FromForm] string confirmCourseIds)
+        {
+            var userId = User.FindFirst("UserId")?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "User ID claim not found.";
+                return RedirectToPage();
+            }
+
+            if (string.IsNullOrWhiteSpace(confirmCourseIds))
+            {
+                TempData["ErrorMessage"] = "No courses selected for payment confirmation.";
+                return RedirectToPage();
+            }
+
+            var courseIds = confirmCourseIds.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+            try
+            {
+                var success = await _studentService.ConfirmPaymentAsync(userId, courseIds);
+                if (success)
+                {
+                    TempData["SuccessMessage"] = $"Tuition payment confirmed for {courseIds.Count} course(s)! You can now click Enroll.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to process payment confirmation.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Payment confirmation failed: {ex.Message}";
+            }
+
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostEnrollAsync(string courseId)

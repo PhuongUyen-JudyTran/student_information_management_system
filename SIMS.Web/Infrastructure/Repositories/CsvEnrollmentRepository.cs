@@ -84,6 +84,32 @@ namespace SIMS.Infrastructure.Repositories
             return true;
         }
 
+        public async Task<bool> UpdateAsync(Enrollment enrollment)
+        {
+            if (enrollment == null) throw new ArgumentNullException(nameof(enrollment));
+
+            var lines = await _context.ReadLinesAsync(Filename);
+            bool updated = false;
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                var fields = CsvHelper.ParseLine(lines[i]);
+                if (fields.Count >= 2 &&
+                    string.Equals(fields[0], enrollment.StudentId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(fields[1], enrollment.CourseId, StringComparison.OrdinalIgnoreCase))
+                {
+                    lines[i] = FormatEnrollment(enrollment);
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated) return false;
+
+            await _context.WriteAllLinesAsync(Filename, lines);
+            return true;
+        }
+
         public async Task<bool> DeleteAsync(string studentId, string courseId)
         {
             if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId)) return false;
@@ -112,22 +138,26 @@ namespace SIMS.Infrastructure.Repositories
 
         private Enrollment MapEnrollment(List<string> fields)
         {
+            var isPaid = fields.Count > 4 ? (bool.TryParse(fields[4], out var p) ? p : true) : true;
+
             return new Enrollment
             {
                 StudentId = fields[0],
                 CourseId = fields[1],
                 EnrollmentDate = DateTime.TryParse(fields[2], CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date : default,
-                Grade = fields[3]
+                Grade = fields[3],
+                IsPaid = isPaid
             };
         }
 
         private string FormatEnrollment(Enrollment enrollment)
         {
-            var fields = new string[4];
+            var fields = new string[5];
             fields[0] = enrollment.StudentId;
             fields[1] = enrollment.CourseId;
             fields[2] = enrollment.EnrollmentDate.ToString("o", CultureInfo.InvariantCulture);
             fields[3] = enrollment.Grade;
+            fields[4] = enrollment.IsPaid.ToString();
 
             return CsvHelper.FormatLine(fields);
         }

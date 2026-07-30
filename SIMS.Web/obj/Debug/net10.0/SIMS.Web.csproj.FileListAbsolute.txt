@@ -205,4 +205,5 @@ C:\Users\Trant\OneDrive\Desktop\WebAppAssigntment\App\SIMS.Web\obj\Debug\net10.0
 C:\Users\Trant\OneDrive\Desktop\WebAppAssigntment\App\SIMS.Web\obj\Debug\net10.0\SIMS.Web.genruntimeconfig.cache
 C:\Users\Trant\OneDrive\Desktop\WebAppAssigntment\App\SIMS.Web\obj\Debug\net10.0\ref\SIMS.Web.dll
 C:\Users\Trant\OneDrive\Desktop\WebAppAssigntment\App\SIMS.Web\obj\Debug\net10.0\compressed\bf34qbpglx-{0}-01a8kgujiz-01a8kgujiz.gz
+C:\Users\Trant\OneDrive\Desktop\WebAppAssigntment\App\SIMS.Web\obj\Debug\net10.0\SIMS.Web.sourcelink.json
 C:\Users\Trant\OneDrive\Desktop\WebAppAssigntment\App\SIMS.Web\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
