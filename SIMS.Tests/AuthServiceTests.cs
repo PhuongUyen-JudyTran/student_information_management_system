@@ -13,6 +13,7 @@ namespace SIMS.Tests
     {
         private readonly Mock<IUserRepository> _mockUserRepo;
         private readonly Mock<IEnrollmentRepository> _mockEnrollmentRepo;
+        private readonly Mock<ICourseRepository> _mockCourseRepo;
         private readonly UserFactory _userFactory;
         private readonly AuthService _authService;
 
@@ -20,8 +21,9 @@ namespace SIMS.Tests
         {
             _mockUserRepo = new Mock<IUserRepository>();
             _mockEnrollmentRepo = new Mock<IEnrollmentRepository>();
+            _mockCourseRepo = new Mock<ICourseRepository>();
             _userFactory = new UserFactory();
-            _authService = new AuthService(_mockUserRepo.Object, _mockEnrollmentRepo.Object, _userFactory);
+            _authService = new AuthService(_mockUserRepo.Object, _mockEnrollmentRepo.Object, _mockCourseRepo.Object, _userFactory);
         }
 
         [Fact]

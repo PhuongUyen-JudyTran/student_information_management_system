@@ -86,6 +86,12 @@ namespace SIMS.Application
         {
             if (string.IsNullOrWhiteSpace(studentId) || string.IsNullOrWhiteSpace(courseId)) return false;
 
+            var student = await _studentRepository.GetByIdAsync(studentId);
+            if (student == null) return false;
+
+            var course = await _courseRepository.GetByIdAsync(courseId);
+            if (course == null) return false;
+
             var existingEnrollments = await _enrollmentRepository.GetByStudentIdAsync(studentId);
             var existing = existingEnrollments?.FirstOrDefault(e => string.Equals(e.CourseId, courseId, StringComparison.OrdinalIgnoreCase));
 
